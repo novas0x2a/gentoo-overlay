@@ -1,0 +1,21 @@
+diff -ur tiff-4.0.0beta2-orig/tools/tiffsplit.c tiff-4.0.0beta2/tools/tiffsplit.c
+--- tiff-4.0.0beta2-orig/tools/tiffsplit.c	2005-12-06 14:18:13.000000000 -0800
++++ tiff-4.0.0beta2/tools/tiffsplit.c	2009-01-07 17:08:47.000000000 -0800
+@@ -61,14 +61,13 @@
+ 		return (-3);
+ 	}
+ 	if (argc > 2)
+-		strcpy(fname, argv[2]);
++		snprintf(fname, sizeof(fname), "%s", argv[2]);
+ 	in = TIFFOpen(argv[1], "r");
+ 	if (in != NULL) {
+ 		do {
+ 			char path[1024+1];
+ 			newfilename();
+-			strcpy(path, fname);
+-			strcat(path, ".tif");
++			snprintf(path, sizeof(path), "%s.tif", fname);
+ 			out = TIFFOpen(path, TIFFIsBigEndian(in)?"wb":"wl");
+ 			if (out == NULL)
+ 				return (-2);
+Only in tiff-4.0.0beta2/tools: tiffsplit.c.orig
