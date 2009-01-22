@@ -61,8 +61,12 @@ src_install() {
 		"${S}/ace/Unbounded_Set_Ex.inl" \
 		"${S}/ace/Unbounded_Set_Ex.h" \
 		"${S}/ace/Unbounded_Set_Ex.cpp"
-	# punt gperf stuff
+
+	# this isn't useful without the bins, but the app names suck.
+	exeinto /opt/${PN}/bin
+	doexe "${D}/usr/bin/*"
 	rm -rf "${D}/usr/bin" "${D}/usr/share"
+
 	# remove PACKAGE_* definitions from installed config.h (#192676)
 	sed -i -e "s:^[ \t]*#define[ \t]\+PACKAGE_.*$:/\* & \*/:g" "${D}/usr/include/ace/config.h"
 }
