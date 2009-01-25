@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/dev-libs/ace/ace-5.6.5-r2.ebuild,v 1.1 2008/12/14 11:56:46 mrness Exp $
 
-inherit toolchain-funcs eutils
+inherit toolchain-funcs eutils autotools
 
 DESCRIPTION="The Adaptive Communications Environment"
 HOMEPAGE="http://www.cs.wustl.edu/~schmidt/ACE.html"
@@ -29,8 +29,8 @@ S="${WORKDIR}/ACE_wrappers"
 src_unpack() {
 	unpack ${A}
 	cd "${S}"
-	epatch "${FILESDIR}"/ace-missing-refcountable-header.patch
-	epatch "${FILESDIR}"/ace-tao-dumb-overloads.patch
+	epatch "${FILESDIR}"/*.patch
+	eautoreconf
 }
 
 src_compile() {
@@ -63,8 +63,8 @@ src_install() {
 		"${S}/ace/Unbounded_Set_Ex.cpp"
 
 	# this isn't useful without the bins, but the app names suck.
-	exeinto /opt/${PN}/bin
-	doexe "${D}/usr/bin/*"
+	mkdir -p "${D}/opt/${PN}" || die
+	mv "${D}/usr/bin" "${D}/opt/${PN}/bin" || die
 	rm -rf "${D}/usr/bin" "${D}/usr/share"
 
 	# remove PACKAGE_* definitions from installed config.h (#192676)
