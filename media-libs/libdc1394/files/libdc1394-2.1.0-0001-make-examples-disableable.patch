@@ -1,0 +1,44 @@
+From 3c6863eb6f1bc70c115a765137db5380b5314ff9 Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Wed, 4 Feb 2009 19:32:05 -0800
+Subject: [PATCH 1/6] make examples disableable
+
+---
+ Makefile.am  |    6 +++++-
+ configure.in |    4 ++++
+ 2 files changed, 9 insertions(+), 1 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 76f218b..74738b3 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,6 +1,10 @@
+ # process this file with automake to create a Makefile.in
+ 
+-SUBDIRS = dc1394 examples
++SUBDIRS = dc1394
++if MAKE_EXAMPLES
++SUBDIRS += examples
++endif
++
+ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure config.h.in \
+ 	stamp-h.in
+ EXTRA_DIST = libdc1394-2.pc.in Doxyfile.in
+diff --git a/configure.in b/configure.in
+index 587dc1a..529fe91 100644
+--- a/configure.in
++++ b/configure.in
+@@ -73,6 +73,10 @@ AM_CONDITIONAL(HAVE_WINDOWS, test x$have_windows = xtrue)
+ AM_CONDITIONAL(HAVE_LIBRAW1394, test x$libraw1394 = xtrue)
+ AM_CONDITIONAL(HAVE_LIBUSB, test "x$LIBUSB_LIBS" != "x")
+ 
++AC_ARG_ENABLE([examples], [AS_HELP_STRING([--disable-examples], [build examples])], [build_examples=$enableval], [build_examples=true])
++
++AM_CONDITIONAL(MAKE_EXAMPLES, test x$build_examples = xtrue)
++
+ # check for Xv extensions (necessary for examples/dc1394_multiview)
+ # imported from Coriander
+ AC_DEFUN([AC_CHECK_XV],[
+-- 
+1.6.1
+

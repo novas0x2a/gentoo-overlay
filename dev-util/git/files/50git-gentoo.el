@@ -1,0 +1,1 @@
+/usr/portage/dev-util/git/files/50git-gentoo.el

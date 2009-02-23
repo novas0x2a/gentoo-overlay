@@ -1,0 +1,27 @@
+From d0fca32859fdf2e108ccc3e5bee5c0410168acea Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Sat, 31 Jan 2009 19:03:58 -0800
+Subject: [PATCH 2/4] soname
+
+---
+ GDALmake.opt.in |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/GDALmake.opt.in b/GDALmake.opt.in
+index df5ca7f..a0d064c 100644
+--- a/GDALmake.opt.in
++++ b/GDALmake.opt.in
+@@ -99,6 +99,10 @@ GDAL_LIB	= 	$(GDAL_ROOT)/libgdal.a
+ GDAL_SLIB	=	$(GDAL_ROOT)/libgdal.$(SO_EXT)
+ GDAL_SLIB_LINK	=	-L$(GDAL_ROOT) -lgdal
+ 
++# for building without libtool
++GDAL_SLIB_SO_VER =	$(GDAL_VERSION_MAJOR).$(LIBGDAL_CURRENT).$(LIBGDAL_REVISION)
++GDAL_SLIB_SONAME =	-Wl,-soname,libgdal.$(SO_EXT).$(GDAL_VERSION_MAJOR)
++
+ # Mac OS X Framework definition
+ MACOSX_FRAMEWORK = @MACOSX_FRAMEWORK@
+ 
+-- 
+1.6.1
+

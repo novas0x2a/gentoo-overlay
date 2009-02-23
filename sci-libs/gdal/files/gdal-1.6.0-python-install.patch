@@ -1,0 +1,28 @@
+From 1c3f4218637301911d344e7c982cd679b2c19944 Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Sat, 31 Jan 2009 19:08:41 -0800
+Subject: [PATCH 4/4] python-install
+
+---
+ swig/python/GNUmakefile |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/swig/python/GNUmakefile b/swig/python/GNUmakefile
+index 7399f47..82e29ca 100644
+--- a/swig/python/GNUmakefile
++++ b/swig/python/GNUmakefile
+@@ -55,9 +55,9 @@ egg:
+ install:
+ 
+ ifeq ($(PY_HAVE_SETUPTOOLS),1)
+-	$(PYTHON) setup.py install 
++	$(PYTHON) setup.py install --root=$(DESTDIR)
+ else
+-	$(PYTHON) setup.py install --prefix=$(DESTDIR)$(prefix)
++	$(PYTHON) setup.py install --root=$(DESTDIR) --prefix=$(prefix)
+ endif
+ 
+ 	for f in $(SCRIPTS) ; do $(INSTALL) ./scripts/$$f $(DESTDIR)$(INST_BIN) ; done
+-- 
+1.6.1
+

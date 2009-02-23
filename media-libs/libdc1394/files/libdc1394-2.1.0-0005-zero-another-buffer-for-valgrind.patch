@@ -1,0 +1,27 @@
+From 56bb84b14e9c73c6ddc346a888052f0adda75113 Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Thu, 5 Feb 2009 17:27:44 -0800
+Subject: [PATCH 5/6] zero another buffer for valgrind
+
+---
+ dc1394/linux/control.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/dc1394/linux/control.c b/dc1394/linux/control.c
+index 04e4007..287f0f4 100644
+--- a/dc1394/linux/control.c
++++ b/dc1394/linux/control.c
+@@ -88,6 +88,10 @@ read_retry (struct raw1394_handle * handle, nodeid_t node, nodeaddr_t addr,
+             size_t length, quadlet_t * buffer)
+ {
+     int retry = DC1394_MAX_RETRIES;
++
++    // zero buffer to please valgrind
++    memset(buffer, 0, length);
++
+     while (retry > 0) {
+         if (raw1394_read (handle, node, addr, length, buffer) == 0)
+             return 0;
+-- 
+1.6.1
+

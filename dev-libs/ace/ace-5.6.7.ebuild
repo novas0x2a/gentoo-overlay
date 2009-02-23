@@ -41,6 +41,7 @@ src_compile() {
 	ECONF_SOURCE="${S}"
 	econf \
 		--enable-lib-all \
+		--prefix=/opt/ace \
 		$(use_with X) \
 		$(use_enable ipv6) \
 		$(use_enable test ace-tests) \
@@ -55,20 +56,15 @@ src_compile() {
 src_install() {
 	cd build
 	emake ACE_ROOT="${S}" DESTDIR="${D}" install || die "failed to install"
-	insinto /usr/include/ace
+	insinto /opt/ace/include/ace
 	doins \
 		"${S}/ace/Svc_Conf_Token_Table.h" \
 		"${S}/ace/Unbounded_Set_Ex.inl" \
 		"${S}/ace/Unbounded_Set_Ex.h" \
 		"${S}/ace/Unbounded_Set_Ex.cpp"
 
-	# this isn't useful without the bins, but the app names suck.
-	mkdir -p "${D}/opt/${PN}" || die
-	mv "${D}/usr/bin" "${D}/opt/${PN}/bin" || die
-	rm -rf "${D}/usr/bin" "${D}/usr/share"
-
 	# remove PACKAGE_* definitions from installed config.h (#192676)
-	sed -i -e "s:^[ \t]*#define[ \t]\+PACKAGE_.*$:/\* & \*/:g" "${D}/usr/include/ace/config.h"
+	sed -i -e "s:^[ \t]*#define[ \t]\+PACKAGE_.*$:/\* & \*/:g" "${D}/opt/ace/include/ace/config.h"
 }
 
 src_test() {
