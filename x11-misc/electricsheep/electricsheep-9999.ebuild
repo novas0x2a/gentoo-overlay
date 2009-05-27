@@ -2,9 +2,9 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/x11-misc/electricsheep/electricsheep-2.6.8-r1.ebuild,v 1.1 2008/04/03 13:32:44 dragonheart Exp $
 
-inherit eutils autotools subversion
-
 EAPI=1
+
+inherit eutils autotools subversion
 
 ESVN_REPO_URI="https://electricsheep.svn.sourceforge.net/svnroot/electricsheep/trunk/client"
 
@@ -13,7 +13,7 @@ HOMEPAGE="http://electricsheep.org/"
 IUSE=""
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="amd64 ~sparc ~x86"
+KEYWORDS="~amd64 ~sparc ~x86"
 
 RDEPEND="
 	dev-util/glade

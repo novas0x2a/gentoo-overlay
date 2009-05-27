@@ -1,4 +1,4 @@
-# Copyright 1999-2008 Gentoo Foundation
+# Copyright 1999-2009 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -8,7 +8,7 @@ MY_PN=SuperLU
 
 DESCRIPTION="Sparse LU factorization library"
 HOMEPAGE="http://crd.lbl.gov/~xiaoye/SuperLU/"
-SRC_URI="http://crd.lbl.gov/~xiaoye/SuperLU/${PN}_${PV}.tar.gz"
+SRC_URI="${HOMEPAGE}/${PN}_${PV}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
@@ -34,8 +34,8 @@ src_unpack() {
 
 src_compile() {
 	econf \
-		--with-blas="$(pkg-config --libs blas)" \
-		|| die "econf failed"
+		--with-blas="$(pkg-config --libs blas)"
+
 	emake || die "emake failed"
 }
 

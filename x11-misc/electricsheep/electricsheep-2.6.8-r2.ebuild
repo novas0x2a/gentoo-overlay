@@ -35,7 +35,7 @@ src_unpack() {
 	unpack ${A}
 	# Detect PIC requirement from direct from compiler instead of
 	# macro PIC.
-	sed -i -e 's/def PIC/def __PIC__/' ${S}/mpeg2dec/src/cpu_accel.c
+	sed -i -e 's/def PIC/def __PIC__/' "${S}"/mpeg2dec/src/cpu_accel.c
 	epatch "${FILESDIR}"/${P}-cflagsfix.patch
 	epatch "${FILESDIR}"/${P}-multihead.patch
 	cd "${S}"
@@ -64,7 +64,7 @@ src_install() {
 			"${D}/usr/share/electricsheep/electricsheep-uniqueid"
 	fi
 
-	if use gnome; 
+	if use gnome;
 	then
 		insinto /usr/share/applications/screensavers
 		doins "${FILESDIR}/${PN}.desktop"

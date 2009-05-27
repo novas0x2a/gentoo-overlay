@@ -1,0 +1,47 @@
+From d92d0d4e4b6227065b2a314cefb7c01d10947329 Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Sat, 2 May 2009 19:57:51 -0700
+Subject: [PATCH] remove idiotic -L${libdir}
+
+---
+ bin/Makefile.in |   11 ++++-------
+ 1 files changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/bin/Makefile.in b/bin/Makefile.in
+index 2d8ec0d..227c86a 100644
+--- a/bin/Makefile.in
++++ b/bin/Makefile.in
+@@ -20,9 +20,6 @@ INSTALL	= @INSTALL@
+ 
+ EXEEXT=@EXEEXT@
+ 
+-prefix = @prefix@
+-libdir  = @libdir@
+-
+ PROGS=${BIN}/makegeo$(EXEEXT) ${BIN}/listgeo$(EXEEXT) ${BIN}/geotifcp$(EXEEXT)
+ 
+ #
+@@ -46,16 +43,16 @@ ALL=	makegeo$(EXEEXT) listgeo$(EXEEXT) geotifcp$(EXEEXT)
+ all:	${ALL} 
+   
+ makegeo$(EXEEXT): makegeo.o  ${GEOTIFFDIR}/libgeotiff.a
+-	${CC} ${COPTS} makegeo.o -L${libdir} ${LIBS} -o $@
++	${CC} ${COPTS} makegeo.o ${LIBS} -o $@
+   
+ geotifcp$(EXEEXT): geotifcp.o  ${GEOTIFFDIR}/libgeotiff.a
+-	${CC} ${COPTS} geotifcp.o -L${libdir} ${LIBS} -o $@
++	${CC} ${COPTS} geotifcp.o ${LIBS} -o $@
+   
+ listgeo$(EXEEXT): listgeo.o  ${GEOTIFFDIR}/libgeotiff.a
+-	${CC} ${COPTS} listgeo.o -L${libdir} ${LIBS} -o $@
++	${CC} ${COPTS} listgeo.o ${LIBS} -o $@
+   
+ csv2html$(EXEEXT): csv2html.o  ${GEOTIFFDIR}/libgeotiff.a
+-	${CC} ${COPTS} csv2html.o -L${libdir} ${LIBS} -o $@
++	${CC} ${COPTS} csv2html.o ${LIBS} -o $@
+ 
+ clean:
+ 	rm -f ${ALL} ${OBJS} core a.out newgeo.tif ${GEOTIFF_SO}
+-- 
+1.6.2
+

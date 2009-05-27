@@ -1,0 +1,41 @@
+From 8ffa062d308f8f6248143a5521f8a2df9a788c0a Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Sun, 24 May 2009 01:11:02 -0700
+Subject: [PATCH] add missing headers
+
+don't these idiots test things?
+---
+ ACE_wrappers/TAO/tao/Makefile.am |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/ACE_wrappers/TAO/tao/Makefile.am b/ACE_wrappers/TAO/tao/Makefile.am
+index d796bc1..a97afa4 100644
+--- a/ACE_wrappers/TAO/tao/Makefile.am
++++ b/ACE_wrappers/TAO/tao/Makefile.am
+@@ -1030,6 +1030,7 @@ nobase_include_HEADERS = \
+   Bounded_Array_Allocation_Traits_T.h \
+   Bounded_Array_Sequence_T.h \
+   Bounded_Basic_String_Sequence_T.h \
++  Bounded_BD_String_Sequence_T.h \
+   Bounded_Object_Reference_Sequence_T.h \
+   Bounded_Reference_Allocation_Traits_T.h \
+   Bounded_Sequence_CDR_T.h \
+@@ -1232,6 +1233,7 @@ nobase_include_HEADERS = \
+   MM_Sequence_Iterator_T.h \
+   MProfile.h \
+   MProfile.inl \
++  Message_Semantics.h \
+   Messaging_PolicyValue.pidl \
+   Messaging_PolicyValue.pidl \
+   Messaging_PolicyValueC.h \
+@@ -1467,6 +1469,7 @@ nobase_include_HEADERS = \
+   Unbounded_Array_Allocation_Traits_T.h \
+   Unbounded_Array_Sequence_T.h \
+   Unbounded_Basic_String_Sequence_T.h \
++  Unbounded_BD_String_Sequence_T.h \
+   Unbounded_Object_Reference_Sequence_T.h \
+   Unbounded_Octet_Sequence_T.h \
+   Unbounded_Reference_Allocation_Traits_T.h \
+-- 
+1.6.2
+

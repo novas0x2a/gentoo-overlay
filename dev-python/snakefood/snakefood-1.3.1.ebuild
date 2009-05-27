@@ -6,7 +6,7 @@ NEED_PYTHON=2.5
 
 inherit distutils
 
-DESCRIPTION="Generate dependencies from Python code, filter, cluster and generate graphs from the dependency list."
+DESCRIPTION="Generate dependencies from Python code and generate graphs from the dependency list."
 HOMEPAGE="http://furius.ca/snakefood"
 SRC_URI="http://furius.ca/downloads/snakefood/releases/${P}.tar.bz2"
 

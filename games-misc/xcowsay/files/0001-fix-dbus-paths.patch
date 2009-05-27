@@ -1,0 +1,44 @@
+From c11c1ac8dc8e6e0dc3fd87d1f0f0eafb17bda66b Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Sun, 24 May 2009 00:40:14 -0700
+Subject: [PATCH] fix dbus paths
+
+---
+ xcowsay-1.0/configure.ac |   18 +++++++++++-------
+ 1 files changed, 11 insertions(+), 7 deletions(-)
+
+diff --git a/xcowsay-1.0/configure.ac b/xcowsay-1.0/configure.ac
+index 6104f55..46539be 100644
+--- a/xcowsay-1.0/configure.ac
++++ b/xcowsay-1.0/configure.ac
+@@ -24,16 +24,20 @@ AC_CHECK_FUNCS([strtol])
+ 
+ # Check for pkg-config packages
+ modules="gtk+-2.0"
+-xcowsayd_modules="$modules dbus-glib-1 gthread-2.0"
++xcowsayd_modules="dbus-glib-1 gthread-2.0"
++
+ AC_ARG_ENABLE(dbus,
+         [AS_HELP_STRING([--disable-dbus], [Do not build DBus daemon.])],
+-        [if test "$enableval" != "no" ; then
+-           modules="$xcowsayd_modules"
+-         fi
+-         CFLAGS="$CFLAGS -DWITHOUT_DBUS"],
+-        [modules="$xcowsayd_modules"])
++        [ENABLE_DBUS="$enableval"])
++
++if test x"$ENABLE_DBUS" = x"no"; then
++    modules="gtk+-2.0"
++    CFLAGS="$CFLAGS -DWITHOUT_DBUS"
++else
++    modules="gtk+-2.0 dbus-glib-1 gthread-2.0"
++fi
+ 
+-PKG_CHECK_MODULES(XCOWSAY, $modules)
++PKG_CHECK_MODULES(XCOWSAY, "$modules")
+ 
+ AC_CONFIG_HEADERS([config.h])
+ AC_OUTPUT([Makefile debian/Makefile src/Makefile po/Makefile.in])
+-- 
+1.6.2
+

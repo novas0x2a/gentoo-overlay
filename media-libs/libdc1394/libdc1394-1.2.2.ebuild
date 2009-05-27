@@ -4,7 +4,7 @@
 
 inherit eutils flag-o-matic
 
-DESCRIPTION="libdc1394 is a library that is intended to provide a high level programming interface for application developers who wish to control IEEE 1394 based cameras that conform to the 1394-based Digital Camera Specification (found at http://www.1394ta.org/)"
+DESCRIPTION="library for controling IEEE 1394 conforming based cameras"
 HOMEPAGE="http://sourceforge.net/projects/libdc1394/"
 
 SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
@@ -20,9 +20,10 @@ DEPEND="${RDEPEND}
 	sys-devel/libtool"
 
 src_unpack() {
-	unpack ${A}; cd ${S}
+	unpack ${A}
+	cd "${S}"
 	if ! use X; then
-		epatch ${FILESDIR}/${P}-nox11.patch
+		epatch "${FILESDIR}/${P}"-nox11.patch
 	fi
 }
 
@@ -36,6 +37,6 @@ src_compile() {
 }
 
 src_install() {
-	make DESTDIR=${D} install || die
+	make DESTDIR="${D}" install || die
 	dodoc NEWS README AUTHORS
 }

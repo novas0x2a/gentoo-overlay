@@ -11,7 +11,7 @@ HOMEPAGE="http://electricsheep.org/"
 IUSE=""
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="amd64 ~sparc ~x86"
+KEYWORDS="~amd64 ~sparc ~x86"
 
 RDEPEND="
 sys-libs/zlib

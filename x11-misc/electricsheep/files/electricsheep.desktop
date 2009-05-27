@@ -3,11 +3,11 @@ Encoding=UTF-8
 Exec=electricsheep
 Icon=kscreensaver
 Type=Application
-Actions=InWindow;Root
+Actions=InWindow;Root;
 X-KDE-Category=Fractals
 X-KDE-Type=OpenGL
 Name=ElectricSheep
-Categories=Screensaver
+Categories=Screensaver;
 StartupNotify=false
 TryExec=electricsheep
 
@@ -60,7 +60,7 @@ Name[zh_CN]=在指定的窗口中显示
 Name[zh_TW]=在指定的視窗中顯示
 Name[zu]=Veza kwi-window ecacisiwe
 NoDisplay=true
- 
+
 [Desktop Action Root]
 Exec=electricsheep --root 1 --zoom 1
 Name=Display in root window

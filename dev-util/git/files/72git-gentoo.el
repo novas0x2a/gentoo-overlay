@@ -1,1 +1,0 @@
-/usr/portage/dev-util/git/files/72git-gentoo.el

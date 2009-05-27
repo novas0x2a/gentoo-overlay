@@ -13,14 +13,19 @@ SLOT="2"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 IUSE="X doc usb examples"
 
-DEPEND=">=sys-libs/libraw1394-1.2.0
+RDEPEND=">=sys-libs/libraw1394-1.2.0
 		X? ( x11-libs/libSM x11-libs/libXv )
-	    doc? ( app-doc/doxygen )
-		usb? ( dev-libs/libusb )"
+		usb? ( dev-libs/libusb )
+"
+
+DEPEND="${RDEPEND}
+	doc? ( app-doc/doxygen )
+"
 
 src_unpack() {
-	unpack ${A}; cd ${S}
-	epatch ${FILESDIR}/${P}-*.patch
+	unpack ${A}
+	cd "${S}"
+	epatch "${FILESDIR}/${P}"-*.patch
 	eautoreconf
 }
 

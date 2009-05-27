@@ -1,0 +1,33 @@
+From 8101ea4f8012804613c8b6579c9274110a16f006 Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Wed, 13 May 2009 22:10:31 -0400
+Subject: [PATCH] slu_util should not be protected against multiple inclusion
+
+---
+ SRC/slu_util.h |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/SRC/slu_util.h b/SRC/slu_util.h
+index ef92559..5a69184 100644
+--- a/SRC/slu_util.h
++++ b/SRC/slu_util.h
+@@ -8,8 +8,8 @@
+  *
+  */
+ 
+-#ifndef __SUPERLU_UTIL /* allow multiple inclusions */
+-#define __SUPERLU_UTIL
++/* NOTE! This file is intentionally not protected against multiple inclusion
++ * since the *defs.h files include it inside various namespaces */
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -291,5 +291,3 @@ extern void    check_repfnz(int, int, int, int *);
+ #ifdef __cplusplus
+   }
+ #endif
+-
+-#endif /* __SUPERLU_UTIL */
+-- 
+1.6.2
+

@@ -1,0 +1,5 @@
+dev - turn on dev features that are otherwise useless
+hdf - add support for hdf v4 images
+tao - build The ACE ORB, a CORBA implementation
+ciao - build Component-Integrated ACE ORB (real-time CORBA)
+trace - enable super-detailed code tracing

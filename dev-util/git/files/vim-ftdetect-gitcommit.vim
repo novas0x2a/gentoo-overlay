@@ -1,1 +1,0 @@
-/usr/portage/dev-util/git/files/vim-ftdetect-gitcommit.vim

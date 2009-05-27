@@ -13,14 +13,15 @@ SLOT="0"
 KEYWORDS="~amd64"
 IUSE=""
 DEPEND="sys-devel/libtool"
+RDEPEND=""
 
 S="${WORKDIR}/${PN}"
 
 src_unpack() {
 	unpack ${A}
-	cd ${S}
-	epatch ${FILESDIR}/*.patch
-	cp ${FILESDIR}/Makefile ${S}
+	cd "${S}"
+	epatch "${FILESDIR}"/*.patch
+	cp "${FILESDIR}"/Makefile "${S}"
 }
 
 src_compile() {

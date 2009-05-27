@@ -19,6 +19,8 @@ IUSE="jpeg nocxx zlib"
 DEPEND="jpeg? ( >=media-libs/jpeg-6b )
 	zlib? ( >=sys-libs/zlib-1.1.3-r2 )"
 
+RDEPEND="${DEPEND}"
+
 src_unpack() {
 	unpack ${A}
 	cd "${S}"
