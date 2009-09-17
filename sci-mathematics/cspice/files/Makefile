@@ -3,30 +3,31 @@ prefix=/usr
 CFLAGS=-O2
 LDFLAGS=-Wl,-export-dynamic -Wl,-no-undefined -Wl,-as-needed
 
-all: cspice csupport
 
-cspice:
-	cd src/$@ && \
-	for i in *.c; do \
-		libtool --mode=compile --tag=CC ${CC} ${CFLAGS} -c $$i; \
-	done
-	libtool --mode=link --tag=CC ${CC} ${LDFLAGS} -o lib$@.la src/$@/*.lo -rpath ${DESTDIR}${prefix}/lib -lm
+LIBTOOL ?= libtool
 
-csupport:
-	cd src/$@ && \
-	for i in *.c; do \
-		libtool --mode=compile --tag=CC ${CC} ${CFLAGS} -c $$i; \
-	done
-	libtool --mode=link --tag=CC ${CC} ${LDFLAGS} -o lib$@.la src/$@/*.lo -rpath ${DESTDIR}${prefix}/lib libcspice.la -lm
+all: libcsupport.la
+
+CSPICE_OBJ=$(patsubst %.c,%.lo,$(wildcard src/cspice/*.c))
+CSUPPORT_OBJ=$(patsubst %.c,%.lo,$(wildcard src/csupport/*.c))
+
+%.lo : %.c
+	$(LIBTOOL) --mode=compile --tag=CC ${CC} ${CFLAGS} -c $^ -o $@
+
+libcspice.la: $(CSPICE_OBJ)
+	$(LIBTOOL) --mode=link --tag=CC ${CC} ${LDFLAGS} -o $@ $^ -rpath ${DESTDIR}${prefix}/lib -lm
+
+libcsupport.la: $(CSUPPORT_OBJ) libcspice.la
+	$(LIBTOOL) --mode=link --tag=CC ${CC} ${LDFLAGS} -o $@ $^ -rpath ${DESTDIR}${prefix}/lib -lm
 
 install:
 	install -m 755 -d ${DESTDIR}${prefix}/include/cspice
-	install -m 644 -t ${DESTDIR}${prefix}/include/cspice include/*
-	libtool --mode=install install -D -c -s libcspice.la   ${DESTDIR}${prefix}/lib/libcspice.la
-	libtool --mode=install install -D -c -s libcsupport.la ${DESTDIR}${prefix}/lib/libcsupport.la
+	install -m 644 include/* ${DESTDIR}${prefix}/include/cspice
+	install -m 755 -d ${DESTDIR}${prefix}/lib
+	$(LIBTOOL) --mode=install install -c -s libcspice.la libcsupport.la ${DESTDIR}${prefix}/lib
 
 clean:
-	libtool --mode=clean rm -f libcspice.la libcsupport.la src/cspice/*.lo src/csupport/*.lo
+	$(LIBTOOL) --mode=clean rm -f libcspice.la libcsupport.la *.lo
 
 .SUFFIXES:
-.PHONY: cspice csupport install
+.PHONY: all install clean
