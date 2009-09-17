@@ -28,19 +28,17 @@ DEPEND="${RDEPEND}
 	dev-util/pkgconfig
 	sys-devel/libtool"
 
-src_unpack() {
-	subversion_src_unpack
-	cd "${S}"
-	epatch "${FILESDIR}/${P}"-*
-	eautoreconf
-}
-
 src_compile() {
 	econf
 	emake || die "emake failed"
 }
 
 src_install() {
+
+	# prevent writing for xscreensaver
+	sed -i "s/^install-data-local:$/install-data-local:\nmy-install-data-local:/" \
+		Makefile || die "sed Makefile failed"
+
 	emake DESTDIR="${D}" install || die "emake install failed"
 
 	insinto `pkg-config --variable themesdir gnome-screensaver`

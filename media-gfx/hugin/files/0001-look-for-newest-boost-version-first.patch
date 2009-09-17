@@ -1,0 +1,44 @@
+From 912d0402d42fa39791dec9b0a41086112c7b775a Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Sun, 14 Jun 2009 16:06:04 -0700
+Subject: [PATCH] look for newest boost version first!
+
+---
+ hugin-0.8.0/CMakeModules/FindBoost.cmake |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/hugin-0.8.0/CMakeModules/FindBoost.cmake b/hugin-0.8.0/CMakeModules/FindBoost.cmake
+index f2caac5..f643a13 100644
+--- a/hugin-0.8.0/CMakeModules/FindBoost.cmake
++++ b/hugin-0.8.0/CMakeModules/FindBoost.cmake
+@@ -100,17 +100,17 @@ ENDIF(WIN32)
+ # Add in some path suffixes. These will have to be updated whenever a new Boost version comes out.
+ SET(SUFFIX_FOR_PATH
+  boost-trunk
+- boost-1_35_1
+- boost-1_35_0
+- boost-1_35
+- boost-1_34_1
+- boost-1_34_0
+- boost-1_34
+- boost-1_33_1
+- boost-1_33_0
+- boost_1_37_0
+- boost_1_38_0
+  boost_1_39_0
++ boost_1_38_0
++ boost_1_37_0
++ boost-1_33_0
++ boost-1_33_1
++ boost-1_34
++ boost-1_34_0
++ boost-1_34_1
++ boost-1_35
++ boost-1_35_0
++ boost-1_35_1
+ )
+ 
+ #
+-- 
+1.6.3.1
+

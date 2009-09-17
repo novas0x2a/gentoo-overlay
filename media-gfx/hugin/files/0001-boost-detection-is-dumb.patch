@@ -1,0 +1,25 @@
+From 0b30acd4f61384415de0904a4d8965de4115da4c Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Sun, 14 Jun 2009 21:11:21 -0700
+Subject: [PATCH] boost detection is dumb
+
+---
+ hugin-0.8.0/CMakeModules/FindBoost.cmake |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/hugin-0.8.0/CMakeModules/FindBoost.cmake b/hugin-0.8.0/CMakeModules/FindBoost.cmake
+index f2caac5..7b04b31 100644
+--- a/hugin-0.8.0/CMakeModules/FindBoost.cmake
++++ b/hugin-0.8.0/CMakeModules/FindBoost.cmake
+@@ -116,7 +116,7 @@ SET(SUFFIX_FOR_PATH
+ #
+ # Look for an installation.
+ #
+-FIND_PATH(Boost_INCLUDE_DIR NAMES boost/config.hpp PATH_SUFFIXES ${SUFFIX_FOR_PATH} PATHS
++FIND_PATH(Boost_INCLUDE_DIR NAMES boost/config.hpp PATHS
+ 
+   # Look in other places.
+   ${BOOST_DIR_SEARCH}
+-- 
+1.6.3.1
+

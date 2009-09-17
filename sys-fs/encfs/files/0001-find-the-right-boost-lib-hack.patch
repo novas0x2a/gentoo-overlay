@@ -1,0 +1,53 @@
+From 38d97741543ba20e7dbb3f2e7f983a540236cdc4 Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Mon, 3 Aug 2009 09:00:21 -0700
+Subject: [PATCH] find the right boost lib (hack)
+
+---
+ encfs-1.5/m4-local/ax_boost_filesystem.m4    |    2 +-
+ encfs-1.5/m4-local/ax_boost_serialization.m4 |    2 +-
+ encfs-1.5/m4-local/ax_boost_system.m4        |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/encfs-1.5/m4-local/ax_boost_filesystem.m4 b/encfs-1.5/m4-local/ax_boost_filesystem.m4
+index 76a31b5..b18d437 100644
+--- a/encfs-1.5/m4-local/ax_boost_filesystem.m4
++++ b/encfs-1.5/m4-local/ax_boost_filesystem.m4
+@@ -77,7 +77,7 @@ AC_DEFUN([AX_BOOST_FILESYSTEM],
+ 			AC_DEFINE(HAVE_BOOST_FILESYSTEM,,[define if the Boost::Filesystem library is available])
+             BOOSTLIBDIR=`echo $BOOST_LDFLAGS | sed -e 's/@<:@^\/@:>@*//'`
+             if test "x$ax_boost_user_filesystem_lib" = "x"; then
+-                for libextension in `ls $BOOSTLIBDIR/libboost_filesystem*.{so,a}* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^lib\(boost_filesystem.*\)\.so.*$;\1;' -e 's;^lib\(boost_filesystem.*\)\.a*$;\1;'` ; do
++                for libextension in `ls -r $BOOSTLIBDIR/libboost_filesystem*.{so,a}* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^lib\(boost_filesystem.*\)\.so.*$;\1;' -e 's;^lib\(boost_filesystem.*\)\.a*$;\1;'` ; do
+                      ax_lib=${libextension}
+ 				    AC_CHECK_LIB($ax_lib, exit,
+                                  [BOOST_FILESYSTEM_LIB="-l$ax_lib"; AC_SUBST(BOOST_FILESYSTEM_LIB) link_filesystem="yes"; break],
+diff --git a/encfs-1.5/m4-local/ax_boost_serialization.m4 b/encfs-1.5/m4-local/ax_boost_serialization.m4
+index 1fac364..37fa62e 100644
+--- a/encfs-1.5/m4-local/ax_boost_serialization.m4
++++ b/encfs-1.5/m4-local/ax_boost_serialization.m4
+@@ -81,7 +81,7 @@ AC_DEFUN([AX_BOOST_SERIALIZATION],
+ 			AC_DEFINE(HAVE_BOOST_SERIALIZATION,,[define if the Boost::Serialization library is available])
+             BOOSTLIBDIR=`echo $BOOST_LDFLAGS | sed -e 's/@<:@^\/@:>@*//'`
+             if test "x$ax_boost_user_serialization_lib" = "x"; then
+-                for libextension in `ls $BOOSTLIBDIR/libboost_serialization*.{so,a}* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^lib\(boost_serialization.*\)\.so.*$;\1;' -e 's;^lib\(boost_serialization.*\)\.a*$;\1;'` ; do
++                for libextension in `ls -r $BOOSTLIBDIR/libboost_serialization*.{so,a}* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^lib\(boost_serialization.*\)\.so.*$;\1;' -e 's;^lib\(boost_serialization.*\)\.a*$;\1;'` ; do
+                      ax_lib=${libextension}
+ 				    AC_CHECK_LIB($ax_lib, exit,
+                                  [BOOST_SERIALIZATION_LIB="-l$ax_lib"; AC_SUBST(BOOST_SERIALIZATION_LIB) link_serialization="yes"; break],
+diff --git a/encfs-1.5/m4-local/ax_boost_system.m4 b/encfs-1.5/m4-local/ax_boost_system.m4
+index 6188603..559351d 100644
+--- a/encfs-1.5/m4-local/ax_boost_system.m4
++++ b/encfs-1.5/m4-local/ax_boost_system.m4
+@@ -84,7 +84,7 @@ AC_DEFUN([AX_BOOST_SYSTEM],
+ 
+ 			LDFLAGS_SAVE=$LDFLAGS
+             if test "x$ax_boost_user_system_lib" = "x"; then
+-                for libextension in `ls $BOOSTLIBDIR/libboost_system*.{so,a}* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^lib\(boost_system.*\)\.so.*$;\1;' -e 's;^lib\(boost_system.*\)\.a*$;\1;'` ; do
++                for libextension in `ls -r $BOOSTLIBDIR/libboost_system*.{so,a}* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^lib\(boost_system.*\)\.so.*$;\1;' -e 's;^lib\(boost_system.*\)\.a*$;\1;'` ; do
+                      ax_lib=${libextension}
+ 				    AC_CHECK_LIB($ax_lib, exit,
+                                  [BOOST_SYSTEM_LIB="-l$ax_lib"; AC_SUBST(BOOST_SYSTEM_LIB) link_system="yes"; break],
+-- 
+1.6.3.3
+
