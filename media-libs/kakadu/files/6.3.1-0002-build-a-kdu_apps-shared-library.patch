@@ -1,0 +1,32 @@
+From ddbafa124c6e4e936b5bc35ecc48263d69fa5e52 Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Sat, 9 Jan 2010 08:16:36 -0800
+Subject: [PATCH 2/2] build a kdu_apps shared library
+
+---
+ kakadu-6.3.1/apps/make/Makefile-Linux-x86-64-gcc |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/kakadu-6.3.1/apps/make/Makefile-Linux-x86-64-gcc b/kakadu-6.3.1/apps/make/Makefile-Linux-x86-64-gcc
+index 5d90a63..c5cf6a3 100644
+--- a/kakadu-6.3.1/apps/make/Makefile-Linux-x86-64-gcc
++++ b/kakadu-6.3.1/apps/make/Makefile-Linux-x86-64-gcc
+@@ -23,11 +23,14 @@ all ::              most kdu_hyperdoc kdu_text_extractor
+ 
+ all_but_hyperdoc :: most kdu_text_extractor
+ 
+-most :: kdu_compress kdu_expand kdu_buffered_compress kdu_buffered_expand kdu_transcoder kdu_maketlm kdu_render simple_example_c simple_example_d kdu_v_compress kdu_v_expand kdu_merge kdu_server kdu_server_admin kdu_vex_fast
++most :: kdu_compress kdu_expand kdu_buffered_compress kdu_buffered_expand kdu_transcoder kdu_maketlm kdu_render simple_example_c simple_example_d kdu_v_compress kdu_v_expand kdu_merge kdu_server kdu_server_admin kdu_vex_fast libkdu_apps_v63R.so
+ 
+ clean:
+ 	rm -f *.o *.so *.a
+ 
++libkdu_apps_v63R.so :: args.o image_in.o image_out.o jp2.o jpx.o kdcs_comms.o kdu_client_window.o kdu_region_compositor.o kdu_region_decompressor.o kdu_security.o kdu_stripe_compressor.o kdu_stripe_decompressor.o kdu_tiff.o mj2.o palette.o roi_sources.o
++	$(CC) $(CFLAGS) -shared -o $(LIB_DIR)/libkdu_apps_v63R.so *.o $(LIB_SRC)
++
+ kdu_compress :: args.o image_in.o kdu_tiff.o palette.o jp2.o jpx.o roi_sources.o ../kdu_compress/kdu_compress.cpp $(LIB_SRC)
+ 	$(CC) $(CFLAGS) ../kdu_compress/kdu_compress.cpp \
+ 	      args.o image_in.o kdu_tiff.o palette.o jp2.o jpx.o \
+-- 
+1.6.6
+

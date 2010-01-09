@@ -14,13 +14,11 @@ KAKADU_POINT_VERSION=${PV##*.}
 KAKADU_MINOR_VERSION=${PV%.*}
 KAKADU_MINOR_VERSION=${KAKADU_MINOR_VERSION#*.}
 
-KAKADU_LIB_STEM=libkdu
-
-KAKADU_OLD_LIB_NAME=${KAKADU_LIB_STEM}_v63R.so
-KAKADU_NEW_LIB_NAME=${KAKADU_LIB_STEM}$(get_libname ${PV})
+KAKADU_OLD_SUFFIX=_v63R.so
+KAKADU_NEW_SUFFIX=$(get_libname ${PV})
 
 # using their libname (ie, v63R) as inspiration, derive SONAME
-KAKADU_SONAME=${KAKADU_LIB_STEM}$(get_libname ${KAKADU_MAJOR_VERSION}.${KAKADU_MINOR_VERSION})
+KAKADU_SONAME_VERSION=$(get_libname ${KAKADU_MAJOR_VERSION}.${KAKADU_MINOR_VERSION})
 
 
 DESCRIPTION="A JPEG2000 encoder/decoder implementing much of the spec"
@@ -66,6 +64,25 @@ src_unpack() {
 		|| die "Could not unzip ${zip_path}"
 
 	mv v* ${P} || die "Could not remove license id from kakadu directory name"
+
+	epatch ${FILESDIR}/${PV}-*
+}
+
+src_prepare() {
+	local makefile=$(get_makefile_name)
+	sed -i \
+		-e "s/${KAKADU_OLD_SUFFIX}/${KAKADU_NEW_SUFFIX}/g" \
+		-e 's/$(LIBS)/$(LDFLAGS) $(LIBS)/g' \
+		-e 's/-shared/$(LDFLAGS) -shared $(LIBS)/g' \
+		-e 's/ -lpthread//g' \
+		coresys/make/${makefile} \
+		apps/make/${makefile} \
+			|| die "Failed to mangle makefiles"
+
+	sed -i -e "s/-shared/-shared -Wl,-soname,libkdu${KAKADU_SONAME_VERSION}/g" \
+		coresys/make/${makefile} || die "Failed to set SONAME on libkdu"
+	sed -i -e "s/-shared/-shared -Wl,-soname,libkdu_apps${KAKADU_SONAME_VERSION}/g" \
+		apps/make/${makefile} || die "Failed to set SONAME on libkdu_apps"
 }
 
 src_compile() {
@@ -95,19 +112,10 @@ src_compile() {
 
 	append-ldflags -Wl,-no-undefined
 
-	sed -i \
-		-e "s/${KAKADU_OLD_LIB_NAME}/${KAKADU_NEW_LIB_NAME}/g" \
-		-e 's/$(LIBS)/$(LDFLAGS) $(LIBS)/g' \
-		-e 's/-shared/$(LDFLAGS) -shared $(LIBS)/g' \
-		-e 's/ -lpthread//g' \
-		coresys/make/${makefile} \
-		apps/make/${makefile} \
-			|| die "Failed to mangle makefiles"
-
 	emake \
 		CC=$(tc-getCXX) 				\
 		CFLAGS="\${INCLUDES} ${flags}" 	\
-		LDFLAGS="${LDFLAGS} -Wl,-soname,${KAKADU_SONAME}" \
+		LDFLAGS="${LDFLAGS}" \
 		LIBS="${LIBS}" \
 		-C coresys/make -f ${makefile} all \
 			|| die "Failed to build library"
@@ -128,13 +136,23 @@ src_install() {
 
 	dobin bin/*/*    || die "Failed to install binaries"
 
-	mv lib/$(get_kdu_arch)/${KAKADU_NEW_LIB_NAME} lib/${KAKADU_SONAME} \
-		|| die "Failed to rename lib to SONAME"
+	for libname in libkdu libkdu_apps; do
+		local SONAME=${libname}${KAKADU_SONAME_VERSION}
+		local NAME=${libname}${KAKADU_NEW_SUFFIX}
 
-	dosym ${KAKADU_SONAME} ${ROOT}/usr/$(get_libdir)/${KAKADU_LIB_STEM}$(get_libname) \
-		|| die "Failed to create symlink"
-	dosym ${KAKADU_SONAME} ${ROOT}/usr/$(get_libdir)/${KAKADU_NEW_LIB_NAME} \
-		|| die "Failed to create symlink"
+		mv lib/$(get_kdu_arch)/${NAME} lib/${SONAME} \
+			|| die "Failed to rename lib to SONAME"
 
-	dolib.so lib/${KAKADU_LIB_STEM}* || die "Failed to install shared library"
+		dosym ${SONAME} ${ROOT}/usr/$(get_libdir)/${libname}$(get_libname) \
+			|| die "Failed to create symlink"
+		dosym ${SONAME} ${ROOT}/usr/$(get_libdir)/${NAME} \
+			|| die "Failed to create symlink"
+	done
+
+	dolib.so lib/libkdu* || die "Failed to install shared library"
+
+	for i in $(find coresys apps -name \*\.h); do
+		insinto "/usr/include/kakadu/$(dirname $i)"
+		doins $i || die "Could not install header"
+	done
 }
