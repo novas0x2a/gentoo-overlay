@@ -1,0 +1,1 @@
+/usr/portage/dev-python/ipython/files/62ipython-gentoo.el

@@ -1,0 +1,34 @@
+From 45499dd74e4eda0f7be89d0527f20e2cce4b5d16 Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Wed, 23 Sep 2009 15:44:09 -0700
+Subject: [PATCH] fix non-static inlines
+
+---
+ libdc1394-2.1.2/examples/dc1394_vloopback.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libdc1394-2.1.2/examples/dc1394_vloopback.c b/libdc1394-2.1.2/examples/dc1394_vloopback.c
+index 2b4b1b1..817cc64 100644
+--- a/libdc1394-9999/libdc1394/examples/dc1394_vloopback.c
++++ b/libdc1394-9999/libdc1394/examples/dc1394_vloopback.c
+@@ -250,7 +250,7 @@ void affine_scale( const unsigned char *src, int src_width, int src_height, unsi
+     }
+ }
+ 
+-inline void
++static inline void
+ yuy2_to_yv16( const unsigned char *src, unsigned char *dest, int width, int height)
+ {
+     register int total = (width * height) >> 1;
+@@ -267,7 +267,7 @@ yuy2_to_yv16( const unsigned char *src, unsigned char *dest, int width, int heig
+     }
+ }
+ 
+-inline void
++static inline void
+ yuy2_to_yv12( const unsigned char *src, unsigned char *dest, int width, int height)
+ {
+     register int stride = width >> 1;
+-- 
+1.6.4
+
