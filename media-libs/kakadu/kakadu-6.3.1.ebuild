@@ -97,6 +97,7 @@ src_compile() {
 
 	sed -i \
 		-e "s/${KAKADU_OLD_LIB_NAME}/${KAKADU_NEW_LIB_NAME}/g" \
+		-e 's/$(LIBS)/$(LDFLAGS) $(LIBS)/g' \
 		-e 's/-shared/$(LDFLAGS) -shared $(LIBS)/g' \
 		-e 's/ -lpthread//g' \
 		coresys/make/${makefile} \
@@ -115,7 +116,7 @@ src_compile() {
 		emake \
 			CC=$(tc-getCXX) 							 \
 			CFLAGS="\${INCLUDES} ${flags} \${DEFINES}" 	 \
-			LDFLAGS="${LDFLAGS}"                         \
+			LDFLAGS="${LDFLAGS} -Wl,-as-needed"          \
 			LIBS="-lm ${LIBS}"                           \
 			-C apps/make -f ${makefile} all_but_hyperdoc \
 				|| die "Failed to build tools"
