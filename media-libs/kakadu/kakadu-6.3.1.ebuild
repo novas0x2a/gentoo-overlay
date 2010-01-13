@@ -27,7 +27,7 @@ LICENSE="kakadu-noncommercial"
 SLOT="0"
 SRC_URI=""
 KEYWORDS="~x86 ~amd64"
-IUSE="mmx sse sse2 sse3 +tools +threads debug"
+IUSE="mmx sse sse2 sse3 +tools +threads debug doc"
 RESTRICT="bindist"
 
 get_kdu_arch() {
@@ -41,6 +41,12 @@ get_kdu_arch() {
 
 get_makefile_name() {
 	echo "Makefile-$(get_kdu_arch)"
+}
+
+pkg_setup() {
+	if use doc && ! use tools; then
+		die "Must build tools to build docs"
+	fi
 }
 
 src_unpack() {
@@ -120,19 +126,21 @@ src_compile() {
 		-C coresys/make -f ${makefile} all \
 			|| die "Failed to build library"
 
+	use doc && target=all || target=all_but_hyperdoc
+
 	if use tools; then
 		emake \
 			CC=$(tc-getCXX) 							 \
 			CFLAGS="\${INCLUDES} ${flags} \${DEFINES}" 	 \
 			LDFLAGS="${LDFLAGS} -Wl,-as-needed"          \
 			LIBS="-lm ${LIBS}"                           \
-			-C apps/make -f ${makefile} all_but_hyperdoc \
+			-C apps/make -f ${makefile} ${target}		 \
 				|| die "Failed to build tools"
 	fi
 }
 
 src_install() {
-	rm bin/*/simple* || die "Failed to remove examples"
+	rm -f bin/*/simple* || die "Failed to remove examples"
 
 	dobin bin/*/*    || die "Failed to install binaries"
 
@@ -155,4 +163,14 @@ src_install() {
 		insinto "/usr/include/kakadu/$(dirname $i)"
 		doins $i || die "Could not install header"
 	done
+
+	sed -i \
+		-e 	's#Overview\.txt#../&#'			\
+	    -e 	's#Usage_Examples\.txt#../&#'	\
+		-e	's#kakadu.pdf#../&#'         	\
+			  	documentation/nav.html
+
+	dohtml -r documentation/*.html documentation/html_pages
+	insinto /usr/share/doc/${PF}/
+	doins documentation/*.txt documentation/kakadu.pdf
 }
