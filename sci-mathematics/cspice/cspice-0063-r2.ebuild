@@ -32,4 +32,6 @@ src_compile() {
 
 src_install() {
 	einstall || die "einstall failed"
+	# Evil... ISIS expects them here, though.
+	dosym cspice ${ROOT}/usr/include/naif
 }
