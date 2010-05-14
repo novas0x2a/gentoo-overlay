@@ -4,11 +4,12 @@
 
 NEED_PYTHON=2.5
 
-inherit distutils
+inherit distutils git
+
+EGIT_REPO_URI="http://git.gnome.org/cgit/postr/"
 
 DESCRIPTION="A small gtk+-based flickr uploader"
 HOMEPAGE="http://burtonini.com/blog/computers/postr"
-SRC_URI="http://burtonini.com/computing/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
