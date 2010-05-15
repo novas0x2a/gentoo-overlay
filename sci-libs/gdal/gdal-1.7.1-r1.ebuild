@@ -111,7 +111,7 @@ src_configure() {
 	    $(use_with netcdf) $(use_with hdf hdf4) $(use_with geos) \
 	    $(use_with sqlite sqlite3 "${EPREFIX}"/usr) $(use_with jpeg2k jasper) $(use_with odbc) \
 	    $(use_with gml xerces) $(use_with hdf5) $(use_with curl) \
-		$(use_with kakadu kakadu /usr) $(use_enable debug)"
+		$(use_with kakadu kakadu /usr/include/kakadu) $(use_enable debug)"
 
 	# It can't find this
 	if useq ogdi ; then
