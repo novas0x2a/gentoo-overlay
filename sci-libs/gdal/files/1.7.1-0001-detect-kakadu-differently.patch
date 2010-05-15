@@ -1,0 +1,116 @@
+From c7d9445d41e8f7dcb511efdd4bd4d6d17ab587e2 Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Sat, 9 Jan 2010 07:11:23 -0800
+Subject: [PATCH 2/3] detect kakadu differently
+
+---
+ gdal-1.6.3/GDALmake.opt.in          |   10 +---------
+ gdal-1.6.3/configure.in             |   31 ++++++++++++++++++++++---------
+ gdal-1.6.3/frmts/jp2kak/GNUmakefile |    8 +++-----
+ 3 files changed, 26 insertions(+), 23 deletions(-)
+
+diff --git a/gdal-1.6.3/GDALmake.opt.in b/gdal-1.6.3/GDALmake.opt.in
+index a4f85d9..d7ae5aa 100644
+--- a/gdal-1.6.3/GDALmake.opt.in
++++ b/gdal-1.6.3/GDALmake.opt.in
+@@ -157,15 +157,7 @@ HAVE_SQLITE = @HAVE_SQLITE@
+ #
+ # JPEG2000 via Kakadu Support.
+ #
+-KAKDIR = @KAKDIR@
+-
+-ifneq ($(KAKDIR),)
+-ifeq ($(HAVE_LIBTOOL),yes)
+-include $(GDAL_ROOT)/frmts/jp2kak/jp2kak.lst
+-KAK_LIBS = $(KAK_OBJ)
+-endif
+-endif
+-
++HAVE_KAKADU = @HAVE_KAKADU@
+ #
+ # JPEG-2000 Support via JasPer library.
+ #
+diff --git a/gdal-1.6.3/configure.in b/gdal-1.6.3/configure.in
+index 3c77202..5e4ad4a 100644
+--- a/gdal-1.6.3/configure.in
++++ b/gdal-1.6.3/configure.in
+@@ -1270,22 +1270,35 @@ AC_MSG_CHECKING([for Kakadu JPEG2000 support])
+ AC_ARG_WITH(kakadu,[  --with-kakadu[=ARG]     Include Kakadu/JPEG2000 support],,)
+ 
+ if test "$with_kakadu" = "no" -o "$with_kakadu" = "" ; then
+-  KAKDIR=
+-  AC_MSG_RESULT([not requested.])
+   HAVE_KAKADU=no
+ elif test "$with_kakadu" = "yes" ; then
+-  AC_MSG_ERROR([
+-For JPEG2000 support using Kakadu you need provide the path to the Kakadu 
+-build directory.  Note that Kakadu is *not* free software.])
++  AC_LANG_PUSH(C++)
++  old_LIBS="$LIBS"
++  LIBS="$LIBS -lkdu"
++  AC_LINK_IFELSE(
++    AC_LANG_PROGRAM(
++      [#include "kdu_compressed.h"
++       #include "kdu_stripe_decompressor.h"
++       #include "kdu_file_io.h"
++       #include "kdu_image.h"
++       #include "roi_sources.h"
++       #include "jp2_local.h"],
++      [kdu_get_core_version()]),
++    [ HAVE_KAKADU=yes ], [ HAVE_KAKADU=no; LIBS="$old_LIBS" ])
++  AC_LANG_POP(C++)
+ else
+-  KAKDIR=$with_kakadu
+-  OPT_GDAL_FORMATS="jp2kak $OPT_GDAL_FORMATS"
+   LIBS="$LIBS -L$with_kakadu/lib -lkdu"
+-  AC_MSG_RESULT([requested.])
++  for incdir in coresys/common apps/compressed_io apps/support apps/image apps/kdu_compress apps/jp2; do
++    EXTRA_INCLUDES="$EXTRA_INCLUDES -I$with_kakadu/$incdir -I$with_kakadu/include/kakadu/$incdir"
++  done
+   HAVE_KAKADU=yes
+ fi
+ 
+-AC_SUBST(KAKDIR,$KAKDIR)
++AC_MSG_RESULT([$HAVE_KAKADU])
++if test "$HAVE_KAKADU" = "yes"; then
++  OPT_GDAL_FORMATS="jp2kak $OPT_GDAL_FORMATS"
++fi
++AC_SUBST(HAVE_KAKADU,$HAVE_KAKADU)
+ 
+ dnl ---------------------------------------------------------------------------
+ dnl Select MrSID library or disable driver.
+diff --git a/gdal-1.6.3/frmts/jp2kak/GNUmakefile b/gdal-1.6.3/frmts/jp2kak/GNUmakefile
+index cac2509..859ccf1 100644
+--- a/gdal-1.6.3/frmts/jp2kak/GNUmakefile
++++ b/gdal-1.6.3/frmts/jp2kak/GNUmakefile
+@@ -9,17 +9,13 @@ endif
+ 
+ OBJ	=	jp2kakdataset.o
+ 
+-KAKINC = -I$(KAKDIR)/coresys/common -I$(KAKDIR)/apps/compressed_io \
+-	-I$(KAKDIR)/apps/jp2 -I$(KAKDIR)/apps/image -I$(KAKDIR)/apps/args \
+-	-I$(KAKDIR)/apps/support -I$(KAKDIR)/apps/kdu_compress
+-
+ APPOBJ  = $(KAK_OBJ)
+ 
+ INSTOBJ = $(foreach d,$(APPOBJ),../o/$(notdir $(d)))
+ 
+ #CXXFLAGS :=	$(CXXFLAGS) -DFILEIO_DEBUG
+ 
+-CPPFLAGS	:=	$(GDAL_INCLUDE) $(KAKINC) -I. $(CPPFLAGS)
++CPPFLAGS	:=	$(GDAL_INCLUDE) -I. $(CPPFLAGS)
+ 
+ default:	$(OBJ:.o=.$(OBJ_EXT))
+ 
+@@ -28,6 +24,8 @@ clean:
+ 	rm -f $(INSTOBJ)
+ 
+ install-obj:	$(O_OBJ:.o=.$(OBJ_EXT))
++ifneq ($(HAVE_LIBTOOL),yes)
+ 	cp $(APPOBJ) ../o
++endif
+ 
+ $(OBJ) $(O_OBJ):	subfile_source.h
+-- 
+1.6.6
+
