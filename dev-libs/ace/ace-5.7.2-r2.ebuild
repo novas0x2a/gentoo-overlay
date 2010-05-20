@@ -2,6 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/dev-libs/ace/ace-5.7.2.ebuild,v 1.1 2009/09/01 09:36:04 patrick Exp $
 
+EAPI=2
+
 inherit toolchain-funcs eutils autotools
 
 DESCRIPTION="The Adaptive Communications Environment"
@@ -30,10 +32,9 @@ src_unpack() {
 	unpack ${A}
 	cd "${S}"
 	epatch "${FILESDIR}"/${PV}-*.patch
-	eautoreconf
 }
 
-src_compile() {
+src_configure() {
 	export ACE_ROOT="${S}"
 	mkdir build
 	cd build
@@ -58,7 +59,11 @@ src_compile() {
 		${myconf} \
 		|| die "econf died"
 	# --with-qos needs ACE_HAS_RAPI
-	emake static_libs=1 || die "emake failed"
+}
+
+src_compile() {
+	export ACE_ROOT="${S}"
+	emake -C build static_libs=0 || die "emake failed"
 }
 
 src_install() {

@@ -1,0 +1,25 @@
+From 2bac58fc09fd2ccb8239f95892aa23261bfc48fe Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Sat, 25 Apr 2009 00:07:27 -0700
+Subject: [PATCH] fix define that is broken when using autoconf
+
+---
+ ace/OS_NS_Thread.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/ace/OS_NS_Thread.cpp b/ace/OS_NS_Thread.cpp
+index 6c45933..71a4699 100644
+--- a/ace/OS_NS_Thread.cpp
++++ b/ace/OS_NS_Thread.cpp
+@@ -4074,7 +4074,7 @@ ACE_OS::thr_create (ACE_THR_FUNC func,
+       if (ACE_BIT_ENABLED (flags, THR_SCOPE_SYSTEM)
+           || ACE_BIT_ENABLED (flags, THR_SCOPE_PROCESS))
+         {
+-#     if defined (ACE_CONFIG_LINUX_H) || defined (HPUX) || defined (ACE_VXWORKS)
++#     if defined (__linux__) || defined (HPUX) || defined (ACE_VXWORKS)
+           // LinuxThreads do not have support for PTHREAD_SCOPE_PROCESS.
+           // Neither does HPUX (up to HP-UX 11.00, as far as I know).
+           // Also VxWorks only delivers scope system
+-- 
+1.6.2
+
