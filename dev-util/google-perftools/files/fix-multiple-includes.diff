@@ -1,0 +1,70 @@
+Index: configure.ac
+===================================================================
+--- configure.ac	(revision 96)
++++ configure.ac	(working copy)
+@@ -11,6 +11,7 @@
+ AC_CANONICAL_HOST
+ AM_INIT_AUTOMAKE([dist-zip])
+ AM_CONFIG_HEADER(src/config.h)
++AC_CONFIG_MACRO_DIR([m4])
+ 
+ # Export the version information (for tc_version and friends)
+ TC_VERSION_MAJOR=`expr "$PACKAGE_VERSION" : '\([[0-9]]*\)'`
+Index: Makefile.am
+===================================================================
+--- Makefile.am	(revision 96)
++++ Makefile.am	(working copy)
+@@ -94,7 +94,7 @@
+ # The .h files you want to install (that is, .h files that people
+ # who install this package can include in their own applications.)
+ # We'll add to this later, on a library-by-library basis
+-googleinclude_HEADERS =
++HEADERLIST =
+ # tcmalloc.h is a special case, because it's a .h.in file
+ nodist_googleinclude_HEADERS = src/google/tcmalloc.h
+ noinst_HEADERS = src/google/tcmalloc.h.in
+@@ -283,7 +283,7 @@
+                         src/base/vdso_support.h
+ SG_STACKTRACE_INCLUDES = src/google/stacktrace.h
+ STACKTRACE_INCLUDES = $(S_STACKTRACE_INCLUDES) $(SG_STACKTRACE_INCLUDES)
+-googleinclude_HEADERS += $(SG_STACKTRACE_INCLUDES)
++HEADERLIST += $(SG_STACKTRACE_INCLUDES)
+ 
+ ### Making the library
+ noinst_LTLIBRARIES += libstacktrace.la
+@@ -369,7 +369,7 @@
+                                src/google/malloc_extension_c.h \
+                                src/google/stacktrace.h
+ TCMALLOC_MINIMAL_INCLUDES = $(S_TCMALLOC_MINIMAL_INCLUDES) $(SG_TCMALLOC_MINIMAL_INCLUDES)
+-googleinclude_HEADERS += $(SG_TCMALLOC_MINIMAL_INCLUDES)
++HEADERLIST += $(SG_TCMALLOC_MINIMAL_INCLUDES)
+ 
+ ### Making the library
+ 
+@@ -746,7 +746,7 @@
+                        src/google/heap-profiler.h \
+                        src/google/heap-checker.h
+ TCMALLOC_INCLUDES = $(S_TCMALLOC_INCLUDES) $(SG_TCMALLOC_INCLUDES)
+-googleinclude_HEADERS += $(SG_TCMALLOC_INCLUDES)
++HEADERLIST += $(SG_TCMALLOC_INCLUDES)
+ 
+ ### Making the library
+ 
+@@ -1072,7 +1072,7 @@
+ SG_CPU_PROFILER_INCLUDES = src/google/profiler.h \
+                            src/google/stacktrace.h
+ CPU_PROFILER_INCLUDES = $(S_CPU_PROFILER_INCLUDES) $(SG_CPU_PROFILER_INCLUDES)
+-googleinclude_HEADERS += $(SG_CPU_PROFILER_INCLUDES)
++HEADERLIST += $(SG_CPU_PROFILER_INCLUDES)
+ 
+ ### Making the library
+ lib_LTLIBRARIES += libprofiler.la
+@@ -1218,6 +1218,8 @@
+ 	test -e "$(distdir)/vsprojects" \
+ 	   && chmod -R u+w $(distdir)/*.sln $(distdir)/vsprojects/
+ 
++googleinclude_HEADERS = $(sort ${HEADERLIST})
++
+ EXTRA_DIST = packages/rpm.sh packages/rpm/rpm.spec packages/deb.sh packages/deb \
+              $(SCRIPTS) libtool \
+              src/windows/get_mangled_names.cc src/windows/override_functions.cc \
