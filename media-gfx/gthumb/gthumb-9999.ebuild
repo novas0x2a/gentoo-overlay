@@ -6,10 +6,11 @@ EAPI="3"
 
 inherit autotools eutils gnome2 git
 
-EGIT_REPO_URI="http://github.com/novas0x2a/gthumb.git"
+#EGIT_REPO_URI="http://github.com/novas0x2a/gthumb.git"
+EGIT_REPO_URI="git://git.gnome.org/gthumb"
 EGIT_BOOTSTRAP="NOCONFIGURE=1 ./autogen.sh"
-EGIT_BRANCH="rebase"
-EGIT_COMMIT="rebase"
+#EGIT_BRANCH="rebase"
+#EGIT_COMMIT="rebase"
 SRC_URI=""
 
 DESCRIPTION="Image viewer and browser for Gnome"
@@ -22,12 +23,12 @@ IUSE="cdr exif gnome-keyring gstreamer http raw slideshow tiff test"
 
 # clutter
 RDEPEND=">=dev-libs/glib-2.16:2
-	>=x11-libs/gtk+-2.18:2
+	>=x11-libs/gtk+-2.20:2
 	>=gnome-base/gconf-2.6
 	>=dev-libs/libunique-1
 	>=media-libs/jpeg-8:0
 	cdr? ( >=app-cdr/brasero-2.28 )
-	exif? ( >=media-gfx/exiv2-0.18 )
+	exif? ( >=media-gfx/exiv2-0.20 )
 	gnome-keyring? ( >=gnome-base/gnome-keyring-2.28 )
 	gstreamer? (
 		>=media-libs/gstreamer-0.10

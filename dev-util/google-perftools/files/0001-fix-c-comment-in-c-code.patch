@@ -1,0 +1,25 @@
+From e6e64e263490da06f1e19bf12aa470b6844c983d Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Thu, 2 Dec 2010 01:52:05 -0800
+Subject: [PATCH] fix c++ comment in c code
+
+---
+ google-perftools-9999/src/google/malloc_hook_c.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/google-perftools-9999/src/google/malloc_hook_c.h b/google-perftools-9999/src/google/malloc_hook_c.h
+index d19e649..1e27516 100644
+--- a/google-perftools-9999/src/google/malloc_hook_c.h
++++ b/google-perftools-9999/src/google/malloc_hook_c.h
+@@ -40,7 +40,7 @@
+ #include <stddef.h>
+ #include <sys/types.h>
+ 
+-// Annoying stuff for windows -- makes sure clients can import these functions
++/* Annoying stuff for windows -- makes sure clients can import these functions */
+ #ifndef PERFTOOLS_DLL_DECL
+ # ifdef _WIN32
+ #   define PERFTOOLS_DLL_DECL  __declspec(dllimport)
+-- 
+1.7.3.2
+

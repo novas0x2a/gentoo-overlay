@@ -2,8 +2,6 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/dev-python/ipython/ipython-0.9.1.ebuild,v 1.4 2009/01/04 18:19:28 armin76 Exp $
 
-NEED_PYTHON=2.5
-
 inherit distutils git
 
 EGIT_REPO_URI="http://github.com/novas0x2a/postr.git"
