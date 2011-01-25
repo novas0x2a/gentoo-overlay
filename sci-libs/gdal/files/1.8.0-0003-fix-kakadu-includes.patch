@@ -1,19 +1,19 @@
-From 0bcaf1b016c06fefc9e11ea0b245c429694c0b08 Mon Sep 17 00:00:00 2001
+From d76244b6bd375e189fa477b2093d417f6b894333 Mon Sep 17 00:00:00 2001
 From: Mike Lundy <mike@fluffypenguin.org>
-Date: Sat, 15 May 2010 15:38:55 -0700
-Subject: [PATCH] fix kakadu includes
+Date: Tue, 25 Jan 2011 14:42:43 -0800
+Subject: [PATCH 3/3] fix kakadu includes
 
 ---
- gdal-1.7.1/GDALmake.opt.in          |    1 +
- gdal-1.7.1/configure.in             |    6 +++++-
- gdal-1.7.1/frmts/jp2kak/GNUmakefile |    2 +-
+ gdal-1.8.0/GDALmake.opt.in          |    1 +
+ gdal-1.8.0/configure.in             |    6 +++++-
+ gdal-1.8.0/frmts/jp2kak/GNUmakefile |    2 +-
  3 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/gdal-1.7.1/GDALmake.opt.in b/gdal-1.7.1/GDALmake.opt.in
-index 1277954..3dcaa14 100644
---- a/gdal-1.7.1/GDALmake.opt.in
-+++ b/gdal-1.7.1/GDALmake.opt.in
-@@ -163,6 +163,7 @@ HAVE_SPATIALITE = @HAVE_SPATIALITE@
+diff --git a/gdal-1.8.0/GDALmake.opt.in b/gdal-1.8.0/GDALmake.opt.in
+index 516655b..598cd4f 100644
+--- a/gdal-1.8.0/GDALmake.opt.in
++++ b/gdal-1.8.0/GDALmake.opt.in
+@@ -167,6 +167,7 @@ HAVE_SPATIALITE = @HAVE_SPATIALITE@
  # JPEG2000 via Kakadu Support.
  #
  HAVE_KAKADU = @HAVE_KAKADU@
@@ -21,11 +21,11 @@ index 1277954..3dcaa14 100644
  #
  # JPEG-2000 Support via JasPer library.
  #
-diff --git a/gdal-1.7.1/configure.in b/gdal-1.7.1/configure.in
-index e4a4903..67eb46a 100644
---- a/gdal-1.7.1/configure.in
-+++ b/gdal-1.7.1/configure.in
-@@ -1449,6 +1449,9 @@ AC_MSG_CHECKING([for Kakadu JPEG2000 support])
+diff --git a/gdal-1.8.0/configure.in b/gdal-1.8.0/configure.in
+index 2a5054d..9e5856e 100644
+--- a/gdal-1.8.0/configure.in
++++ b/gdal-1.8.0/configure.in
+@@ -1520,6 +1520,9 @@ AC_MSG_CHECKING([for Kakadu JPEG2000 support])
  
  AC_ARG_WITH(kakadu,[  --with-kakadu[=ARG]     Include Kakadu/JPEG2000 support],,)
  
@@ -35,7 +35,7 @@ index e4a4903..67eb46a 100644
  if test "$with_kakadu" = "no" -o "$with_kakadu" = "" ; then
    HAVE_KAKADU=no
  elif test "$with_kakadu" = "yes" ; then
-@@ -1469,7 +1472,7 @@ elif test "$with_kakadu" = "yes" ; then
+@@ -1540,7 +1543,7 @@ elif test "$with_kakadu" = "yes" ; then
  else
    LIBS="$LIBS -L$with_kakadu/lib -lkdu -lkdu_apps"
    for incdir in coresys/common apps/compressed_io apps/support apps/image apps/kdu_compress apps/jp2; do
@@ -44,18 +44,18 @@ index e4a4903..67eb46a 100644
    done
    HAVE_KAKADU=yes
  fi
-@@ -1479,6 +1482,7 @@ if test "$HAVE_KAKADU" = "yes"; then
-   OPT_GDAL_FORMATS="jp2kak $OPT_GDAL_FORMATS"
+@@ -1550,6 +1553,7 @@ if test "$HAVE_KAKADU" = "yes"; then
+   OPT_GDAL_FORMATS="jp2kak jpipkak $OPT_GDAL_FORMATS"
  fi
  AC_SUBST(HAVE_KAKADU,$HAVE_KAKADU)
 +AC_SUBST(KAKADU_INCLUDE,$KAKADU_INCLUDE)
  
  dnl ---------------------------------------------------------------------------
  dnl Select MrSID library or disable driver.
-diff --git a/gdal-1.7.1/frmts/jp2kak/GNUmakefile b/gdal-1.7.1/frmts/jp2kak/GNUmakefile
+diff --git a/gdal-1.8.0/frmts/jp2kak/GNUmakefile b/gdal-1.8.0/frmts/jp2kak/GNUmakefile
 index 4a09c0a..8fcf83c 100644
---- a/gdal-1.7.1/frmts/jp2kak/GNUmakefile
-+++ b/gdal-1.7.1/frmts/jp2kak/GNUmakefile
+--- a/gdal-1.8.0/frmts/jp2kak/GNUmakefile
++++ b/gdal-1.8.0/frmts/jp2kak/GNUmakefile
 @@ -5,7 +5,7 @@ OBJ	=	jp2kakdataset.o
  
  #CXXFLAGS :=	$(CXXFLAGS) -DFILEIO_DEBUG
@@ -66,5 +66,5 @@ index 4a09c0a..8fcf83c 100644
  default:	$(OBJ:.o=.$(OBJ_EXT))
  
 -- 
-1.7.1
+1.7.4.rc2
 

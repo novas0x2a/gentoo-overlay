@@ -1,20 +1,20 @@
-From 00b7d0fc42bad8277bc54df577c248cb2c7d4cb0 Mon Sep 17 00:00:00 2001
+From e6db3251e417df37ea59960bab8372082c83b442 Mon Sep 17 00:00:00 2001
 From: Mike Lundy <mike@fluffypenguin.org>
-Date: Sat, 9 Jan 2010 09:14:20 -0800
-Subject: [PATCH 3/3] put kdu_apps things into their own library
+Date: Tue, 25 Jan 2011 14:41:51 -0800
+Subject: [PATCH 2/3] put kdu things into their own library
 
 ---
- gdal-1.6.3/configure.in             |    4 ++--
- gdal-1.6.3/frmts/jp2kak/GNUmakefile |   14 --------------
- gdal-1.6.3/frmts/jp2kak/jp2kak.lst  |   15 ---------------
- 3 files changed, 2 insertions(+), 31 deletions(-)
- delete mode 100644 gdal-1.6.3/frmts/jp2kak/jp2kak.lst
+ gdal-1.8.0/configure.in             |    4 ++--
+ gdal-1.8.0/frmts/jp2kak/GNUmakefile |   14 --------------
+ gdal-1.8.0/frmts/jp2kak/jp2kak.lst  |   16 ----------------
+ 3 files changed, 2 insertions(+), 32 deletions(-)
+ delete mode 100644 gdal-1.8.0/frmts/jp2kak/jp2kak.lst
 
-diff --git a/gdal-1.6.3/configure.in b/gdal-1.6.3/configure.in
-index 5e4ad4a..2f13972 100644
---- a/gdal-1.6.3/configure.in
-+++ b/gdal-1.6.3/configure.in
-@@ -1274,7 +1274,7 @@ if test "$with_kakadu" = "no" -o "$with_kakadu" = "" ; then
+diff --git a/gdal-1.8.0/configure.in b/gdal-1.8.0/configure.in
+index 5ffe8a7..2a5054d 100644
+--- a/gdal-1.8.0/configure.in
++++ b/gdal-1.8.0/configure.in
+@@ -1525,7 +1525,7 @@ if test "$with_kakadu" = "no" -o "$with_kakadu" = "" ; then
  elif test "$with_kakadu" = "yes" ; then
    AC_LANG_PUSH(C++)
    old_LIBS="$LIBS"
@@ -23,7 +23,7 @@ index 5e4ad4a..2f13972 100644
    AC_LINK_IFELSE(
      AC_LANG_PROGRAM(
        [#include "kdu_compressed.h"
-@@ -1287,7 +1287,7 @@ elif test "$with_kakadu" = "yes" ; then
+@@ -1538,7 +1538,7 @@ elif test "$with_kakadu" = "yes" ; then
      [ HAVE_KAKADU=yes ], [ HAVE_KAKADU=no; LIBS="$old_LIBS" ])
    AC_LANG_POP(C++)
  else
@@ -32,10 +32,10 @@ index 5e4ad4a..2f13972 100644
    for incdir in coresys/common apps/compressed_io apps/support apps/image apps/kdu_compress apps/jp2; do
      EXTRA_INCLUDES="$EXTRA_INCLUDES -I$with_kakadu/$incdir -I$with_kakadu/include/kakadu/$incdir"
    done
-diff --git a/gdal-1.6.3/frmts/jp2kak/GNUmakefile b/gdal-1.6.3/frmts/jp2kak/GNUmakefile
+diff --git a/gdal-1.8.0/frmts/jp2kak/GNUmakefile b/gdal-1.8.0/frmts/jp2kak/GNUmakefile
 index 859ccf1..4a09c0a 100644
---- a/gdal-1.6.3/frmts/jp2kak/GNUmakefile
-+++ b/gdal-1.6.3/frmts/jp2kak/GNUmakefile
+--- a/gdal-1.8.0/frmts/jp2kak/GNUmakefile
++++ b/gdal-1.8.0/frmts/jp2kak/GNUmakefile
 @@ -1,18 +1,8 @@
  
  include ../../GDALmake.opt
@@ -67,12 +67,12 @@ index 859ccf1..4a09c0a 100644
 -endif
  
  $(OBJ) $(O_OBJ):	subfile_source.h
-diff --git a/gdal-1.6.3/frmts/jp2kak/jp2kak.lst b/gdal-1.6.3/frmts/jp2kak/jp2kak.lst
+diff --git a/gdal-1.8.0/frmts/jp2kak/jp2kak.lst b/gdal-1.8.0/frmts/jp2kak/jp2kak.lst
 deleted file mode 100644
-index a54b1f3..0000000
---- a/gdal-1.6.3/frmts/jp2kak/jp2kak.lst
+index deb4014..0000000
+--- a/gdal-1.8.0/frmts/jp2kak/jp2kak.lst
 +++ /dev/null
-@@ -1,15 +0,0 @@
+@@ -1,16 +0,0 @@
 -KAK_OBJ = \
 -	$(KAKDIR)/apps/make/args.o \
 -	$(KAKDIR)/apps/make/image_in.o \
@@ -81,6 +81,7 @@ index a54b1f3..0000000
 -	$(KAKDIR)/apps/make/mj2.o \
 -	$(KAKDIR)/apps/make/palette.o \
 -	$(KAKDIR)/apps/make/roi_sources.o \
+-	$(KAKDIR)/apps/make/kdu_region_decompressor.o \
 -	$(KAKDIR)/apps/make/kdu_stripe_decompressor.o
 -
 -# The following are just for Kakadu 5.1 or later, comment out if older.
@@ -89,5 +90,5 @@ index a54b1f3..0000000
 -    $(KAKDIR)/apps/make/jpx.o
 -
 -- 
-1.6.6
+1.7.4.rc2
 
