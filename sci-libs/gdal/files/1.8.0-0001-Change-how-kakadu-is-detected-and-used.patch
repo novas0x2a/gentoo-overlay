@@ -1,0 +1,190 @@
+From f7298d327d5fa10bbb10a6534f810bdf3279ceef Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Tue, 25 Jan 2011 14:39:18 -0800
+Subject: [PATCH] Change how kakadu is detected and used
+
+---
+ gdal-1.8.0/GDALmake.opt.in           |   11 +--------
+ gdal-1.8.0/configure.in              |   37 ++++++++++++++++++++++++---------
+ gdal-1.8.0/frmts/jp2kak/GNUmakefile  |   18 +---------------
+ gdal-1.8.0/frmts/jp2kak/jp2kak.lst   |   16 --------------
+ gdal-1.8.0/frmts/jpipkak/GNUmakefile |   14 +-----------
+ 5 files changed, 32 insertions(+), 64 deletions(-)
+ delete mode 100644 gdal-1.8.0/frmts/jp2kak/jp2kak.lst
+
+diff --git a/gdal-1.8.0/GDALmake.opt.in b/gdal-1.8.0/GDALmake.opt.in
+index bdeba13..598cd4f 100644
+--- a/gdal-1.8.0/GDALmake.opt.in
++++ b/gdal-1.8.0/GDALmake.opt.in
+@@ -166,15 +166,8 @@ HAVE_SPATIALITE = @HAVE_SPATIALITE@
+ #
+ # JPEG2000 via Kakadu Support.
+ #
+-KAKDIR = @KAKDIR@
+-
+-ifneq ($(KAKDIR),)
+-ifeq ($(HAVE_LIBTOOL),yes)
+-include $(GDAL_ROOT)/frmts/jp2kak/jp2kak.lst
+-KAK_LIBS = $(KAK_OBJ)
+-endif
+-endif
+-
++HAVE_KAKADU = @HAVE_KAKADU@
++KAKADU_INCLUDE = @KAKADU_INCLUDE@
+ #
+ # JPEG-2000 Support via JasPer library.
+ #
+diff --git a/gdal-1.8.0/configure.in b/gdal-1.8.0/configure.in
+index 846cd57..67cc1b1 100644
+--- a/gdal-1.8.0/configure.in
++++ b/gdal-1.8.0/configure.in
+@@ -1520,23 +1520,40 @@ AC_MSG_CHECKING([for Kakadu JPEG2000 support])
+ 
+ AC_ARG_WITH(kakadu,[  --with-kakadu[=ARG]     Include Kakadu/JPEG2000 support],,)
+ 
++HAVE_KAKADU=no
++KAKADU_INCLUDE=
++
+ if test "$with_kakadu" = "no" -o "$with_kakadu" = "" ; then
+-  KAKDIR=
+-  AC_MSG_RESULT([not requested.])
+   HAVE_KAKADU=no
+ elif test "$with_kakadu" = "yes" ; then
+-  AC_MSG_ERROR([
+-For JPEG2000 support using Kakadu you need provide the path to the Kakadu 
+-build directory.  Note that Kakadu is *not* free software.])
++  AC_LANG_PUSH(C++)
++  old_LIBS="$LIBS"
++  LIBS="$LIBS -lkdu -lkdu_apps"
++  AC_LINK_IFELSE(
++    AC_LANG_PROGRAM(
++      [#include "kdu_compressed.h"
++       #include "kdu_stripe_decompressor.h"
++       #include "kdu_file_io.h"
++       #include "kdu_image.h"
++       #include "roi_sources.h"
++       #include "jp2_local.h"],
++      [kdu_get_core_version()]),
++    [ HAVE_KAKADU=yes ], [ HAVE_KAKADU=no; LIBS="$old_LIBS" ])
++  AC_LANG_POP(C++)
+ else
+-  KAKDIR=$with_kakadu
+-  OPT_GDAL_FORMATS="jp2kak jpipkak $OPT_GDAL_FORMATS"
+-  LIBS="$LIBS -L$with_kakadu/lib -lkdu"
+-  AC_MSG_RESULT([requested.])
++  LIBS="$LIBS -L$with_kakadu/lib -lkdu -lkdu_apps"
++  for incdir in coresys/common apps/compressed_io apps/jp2 apps/image apps/args apps/support apps/kdu_compress apps/caching_sources; do
++    KAKADU_INCLUDE="$KAKADU_INCLUDE -I$with_kakadu/$incdir -I$with_kakadu/include/kakadu/$incdir"
++  done
+   HAVE_KAKADU=yes
+ fi
+ 
+-AC_SUBST(KAKDIR,$KAKDIR)
++AC_MSG_RESULT([$HAVE_KAKADU])
++if test "$HAVE_KAKADU" = "yes"; then
++  OPT_GDAL_FORMATS="jp2kak jpipkak $OPT_GDAL_FORMATS"
++fi
++AC_SUBST(HAVE_KAKADU,$HAVE_KAKADU)
++AC_SUBST(KAKADU_INCLUDE,$KAKADU_INCLUDE)
+ 
+ dnl ---------------------------------------------------------------------------
+ dnl Select MrSID library or disable driver.
+diff --git a/gdal-1.8.0/frmts/jp2kak/GNUmakefile b/gdal-1.8.0/frmts/jp2kak/GNUmakefile
+index cac2509..8fcf83c 100644
+--- a/gdal-1.8.0/frmts/jp2kak/GNUmakefile
++++ b/gdal-1.8.0/frmts/jp2kak/GNUmakefile
+@@ -1,33 +1,17 @@
+ 
+ include ../../GDALmake.opt
+ 
+-ifneq (($KAKDIR),)
+-ifneq ($(HAVE_LIBTOOL),yes)
+-include $(GDAL_ROOT)/frmts/jp2kak/jp2kak.lst
+-endif
+-endif
+-
+ OBJ	=	jp2kakdataset.o
+ 
+-KAKINC = -I$(KAKDIR)/coresys/common -I$(KAKDIR)/apps/compressed_io \
+-	-I$(KAKDIR)/apps/jp2 -I$(KAKDIR)/apps/image -I$(KAKDIR)/apps/args \
+-	-I$(KAKDIR)/apps/support -I$(KAKDIR)/apps/kdu_compress
+-
+-APPOBJ  = $(KAK_OBJ)
+-
+-INSTOBJ = $(foreach d,$(APPOBJ),../o/$(notdir $(d)))
+-
+ #CXXFLAGS :=	$(CXXFLAGS) -DFILEIO_DEBUG
+ 
+-CPPFLAGS	:=	$(GDAL_INCLUDE) $(KAKINC) -I. $(CPPFLAGS)
++CPPFLAGS	:=	$(GDAL_INCLUDE) -I. $(CPPFLAGS) $(KAKADU_INCLUDE)
+ 
+ default:	$(OBJ:.o=.$(OBJ_EXT))
+ 
+ clean:
+ 	rm -f *.o $(O_OBJ)
+-	rm -f $(INSTOBJ)
+ 
+ install-obj:	$(O_OBJ:.o=.$(OBJ_EXT))
+-	cp $(APPOBJ) ../o
+ 
+ $(OBJ) $(O_OBJ):	subfile_source.h
+diff --git a/gdal-1.8.0/frmts/jp2kak/jp2kak.lst b/gdal-1.8.0/frmts/jp2kak/jp2kak.lst
+deleted file mode 100644
+index deb4014..0000000
+--- a/gdal-1.8.0/frmts/jp2kak/jp2kak.lst
++++ /dev/null
+@@ -1,16 +0,0 @@
+-KAK_OBJ = \
+-	$(KAKDIR)/apps/make/args.o \
+-	$(KAKDIR)/apps/make/image_in.o \
+-	$(KAKDIR)/apps/make/image_out.o \
+-	$(KAKDIR)/apps/make/jp2.o \
+-	$(KAKDIR)/apps/make/mj2.o \
+-	$(KAKDIR)/apps/make/palette.o \
+-	$(KAKDIR)/apps/make/roi_sources.o \
+-	$(KAKDIR)/apps/make/kdu_region_decompressor.o \
+-	$(KAKDIR)/apps/make/kdu_stripe_decompressor.o
+-
+-# The following are just for Kakadu 5.1 or later, comment out if older.
+-KAK_OBJ +=	\
+-    $(KAKDIR)/apps/make/kdu_tiff.o \
+-    $(KAKDIR)/apps/make/jpx.o
+-
+diff --git a/gdal-1.8.0/frmts/jpipkak/GNUmakefile b/gdal-1.8.0/frmts/jpipkak/GNUmakefile
+index b028429..f39fe9b 100644
+--- a/gdal-1.8.0/frmts/jpipkak/GNUmakefile
++++ b/gdal-1.8.0/frmts/jpipkak/GNUmakefile
+@@ -1,20 +1,11 @@
+ 
+ include ../../GDALmake.opt
+ 
+-OBJ	=	jpipkakdataset.o kdu_cache.o
+-
+-KAKINC = -I$(KAKDIR)/coresys/common -I$(KAKDIR)/apps/compressed_io \
+-	-I$(KAKDIR)/apps/jp2 -I$(KAKDIR)/apps/image -I$(KAKDIR)/apps/args \
+-	-I$(KAKDIR)/apps/support -I$(KAKDIR)/apps/kdu_compress \
+-	-I$(KAKDIR)/apps/caching_sources
+-
+-APPOBJ  = $(KAK_OBJ)
+-
+-INSTOBJ = $(foreach d,$(APPOBJ),../o/$(notdir $(d)))
++OBJ	=	jpipkakdataset.o
+ 
+ #CXXFLAGS :=	$(CXXFLAGS) -DFILEIO_DEBUG
+ 
+-CPPFLAGS	:=	$(GDAL_INCLUDE) $(KAKINC) -I. $(CPPFLAGS)
++CPPFLAGS	:=	$(GDAL_INCLUDE) -I. $(CPPFLAGS) $(KAKADU_INCLUDE)
+ 
+ default:	$(OBJ:.o=.$(OBJ_EXT))
+ 
+@@ -26,7 +17,6 @@ kdu_cache.cpp:	  $(KAKDIR)/apps/caching_sources/kdu_cache.cpp
+ 
+ clean:
+ 	rm -f *.o $(O_OBJ)
+-	rm -f $(INSTOBJ)
+ 
+ install-obj:	$(O_OBJ:.o=.$(OBJ_EXT))
+ 
+-- 
+1.7.4.rc2
+

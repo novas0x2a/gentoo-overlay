@@ -79,9 +79,7 @@ src_prepare() {
 		-e "s:setup.py install:setup.py install --root=\$(DESTDIR):" \
 		swig/python/GNUmakefile || die
 
-	epatch "${FILESDIR}"/1.8.0-0001-detect-kakadu-differently.patch
-	epatch "${FILESDIR}"/1.8.0-0002-put-kdu-things-into-their-own-library.patch
-	epatch "${FILESDIR}"/1.8.0-0003-fix-kakadu-includes.patch
+	epatch "${FILESDIR}"/1.8.0-0001-Change-how-kakadu-is-detected-and-used.patch
 	epatch "${FILESDIR}"/1.7.2-ruby_cflags.patch
 
 	# -soname is only accepted by GNU ld/ELF
