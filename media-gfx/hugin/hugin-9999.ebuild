@@ -25,7 +25,7 @@ CDEPEND="
 	>=media-gfx/enblend-3.0_p20080807
 	media-gfx/exiv2
 	media-libs/jpeg:0
-	>=media-libs/libpano13-2.9.17
+	>=media-libs/libpano13-2.9.18
 	media-libs/libpng
 	media-libs/openexr
 	media-libs/tiff

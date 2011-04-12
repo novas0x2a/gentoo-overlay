@@ -6,8 +6,7 @@ EAPI=2
 
 inherit toolchain-funcs multilib eutils flag-o-matic
 
-KAKADU_ZIP_NAME=kakadu-${PV}.zip
-KAKADU_LIST_CKSUM=11155ee97c2d7efa302f687419a6fe579f6277ce
+#KAKADU_LIST_CKSUM=11155ee97c2d7efa302f687419a6fe579f6277ce
 
 KAKADU_MAJOR_VERSION=${PV%%.*}
 KAKADU_POINT_VERSION=${PV##*.}
@@ -25,10 +24,10 @@ DESCRIPTION="A JPEG2000 encoder/decoder implementing much of the spec"
 HOMEPAGE="http://www.kakadusoftware.com/"
 LICENSE="kakadu-noncommercial"
 SLOT="0"
-SRC_URI=""
+SRC_URI="kakadu-${PV}.zip"
 KEYWORDS="~x86 ~amd64"
 IUSE="mmx sse sse2 sse3 +tools +threads debug doc"
-RESTRICT="bindist"
+RESTRICT="bindist fetch"
 
 get_kdu_arch() {
 	case ${CHOST} in
@@ -43,6 +42,12 @@ get_makefile_name() {
 	echo "Makefile-$(get_kdu_arch)"
 }
 
+pkg_nofetch() {
+	elog "You need to go to http://www.kakadusoftware.com/ and get a license."
+	elog "After you download your zip, rename it to ${SRC_URI}"
+	elog "and move it to ${DISTDIR}"
+}
+
 pkg_setup() {
 	if use doc && ! use tools; then
 		die "Must build tools to build docs"
@@ -50,25 +55,17 @@ pkg_setup() {
 }
 
 src_unpack() {
-	local zip_path="${PORTDIR}/distfiles/${KAKADU_ZIP_NAME}"
-	if [[ ! -f "${zip_path}" ]]; then
-		eerror "You need to go to http://www.kakadusoftware.com/ and get a license."
-		eerror "After you download your zip, rename it to kakadu-${PV}.zip"
-		eerror "and put it at ${zip_path}."
-		die "Missing ${KAKADU_ZIP_NAME}"
-	fi
+	default_src_unpack
+	## This will only protect against partial files... it won't protect against
+	## intentional maliciousness.
+	#local list_chksum="$(unzip -l ${SRC_URI} | cut -d / -f 2- | sha1sum | cut -d ' ' -f 1)"
 
-	# This will only protect against partial files... it won't protect against
-	# intentional maliciousness.
-	local list_chksum="$(unzip -l ${zip_path} | cut -d / -f 2- | sha1sum | cut -d ' ' -f 1)"
+	#if [[ ${list_chksum} != ${KAKADU_LIST_CKSUM} ]]; then
+	#	die "Checksum failure [got ${list_chksum}]! Please rm ${SRC_URI} and try again!";
+	#fi
 
-	if [[ ${list_chksum} != ${KAKADU_LIST_CKSUM} ]]; then
-		die "Checksum failure [got ${list_chksum}]! Please rm ${zip_path} and try again!";
-	fi
-
-	unzip -qo "${zip_path}" \
-		|| die "Could not unzip ${zip_path}"
-
+	#unzip -qo "${SRC_URI}" \
+	#	|| die "Could not unzip ${SRC_URI}"
 	mv v* ${P} || die "Could not remove license id from kakadu directory name"
 }
 

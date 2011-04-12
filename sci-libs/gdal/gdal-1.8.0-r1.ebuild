@@ -1,14 +1,15 @@
-# Copyright 1999-2010 Gentoo Foundation
+# Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/sci-libs/gdal/gdal-1.7.2-r1.ebuild,v 1.1 2010/09/11 14:55:17 scarabeus Exp $
+# $Header: /var/cvsroot/gentoo-x86/sci-libs/gdal/gdal-1.8.0-r1.ebuild,v 1.1 2011/03/03 07:21:12 nerdboy Exp $
 
-EAPI="3"
+EAPI="2"
 
 WANT_AUTOCONF="2.5"
 RUBY_OPTIONAL="yes"
 USE_RUBY="ruby18"
-PYTHON_DEPEND="python? 2"
-inherit autotools eutils perl-module python ruby toolchain-funcs
+PYTHON_DEPEND="python? *:2.6"
+
+inherit autotools eutils perl-module python ruby-ng toolchain-funcs
 
 DESCRIPTION="GDAL is a translator library for raster geospatial data formats (includes OGR support)"
 HOMEPAGE="http://www.gdal.org/"
@@ -16,9 +17,9 @@ SRC_URI="http://download.osgeo.org/gdal/${P}.tar.gz"
 
 SLOT="0"
 LICENSE="MIT"
-KEYWORDS="~amd64 ~ppc ~ppc64 ~sparc ~x86 ~amd64-linux ~ppc-macos ~x86-linux ~x86-macos"
+KEYWORDS="~amd64 ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
 
-IUSE="curl debug doc ecwj2k fits geos gif gml hdf5 jpeg jpeg2k mysql netcdf odbc ogdi pam perl png postgres python ruby sqlite threads kakadu"
+IUSE="+aux_xml curl debug doc ecwj2k fits geos gif gml hdf5 jpeg jpeg2k mysql netcdf odbc ogdi pdf perl png postgres python ruby sqlite threads kakadu"
 
 RDEPEND="
 	dev-libs/expat
@@ -32,13 +33,13 @@ RDEPEND="
 	gif? ( media-libs/giflib )
 	gml? ( >=dev-libs/xerces-c-3 )
 	hdf5? ( >=sci-libs/hdf5-1.6.4[szip] )
-	jpeg? ( media-libs/jpeg )
+	jpeg? ( virtual/jpeg )
 	jpeg2k? ( media-libs/jasper )
 	mysql? ( virtual/mysql )
 	netcdf? ( sci-libs/netcdf )
 	odbc?   ( dev-db/unixODBC )
 	ogdi? ( sci-libs/ogdi )
-	pam? ( sys-libs/pam )
+	pdf? ( app-text/poppler )
 	perl? ( dev-lang/perl )
 	png? ( media-libs/libpng )
 	postgres? (
@@ -48,25 +49,22 @@ RDEPEND="
 		)
 	)
 	python? ( dev-python/numpy )
-	ruby? ( >=dev-lang/ruby-1.8.4.20060226 )
-	sqlite? ( >=dev-db/sqlite-3 )
+	ruby? ( $(ruby_implementation_depend ruby18) )
 	kakadu? ( media-libs/kakadu )
-"
+	sqlite? ( >=dev-db/sqlite-3 )"
 
 DEPEND="${RDEPEND}
 	doc? ( app-doc/doxygen )
 	perl? ( >=dev-lang/swig-1.3.32 )
 	python? ( >=dev-lang/swig-1.3.32 )
-	ruby? ( >=dev-lang/swig-1.3.32 )
-"
+	ruby? ( >=dev-lang/swig-1.3.32 )"
 
 AT_M4DIR="${S}/m4"
-
 MAKEOPTS+=" -j1"
 
-pkg_setup() {
-	# only py2 is supported
-	python_set_active_version 2
+src_unpack() {
+	# prevent ruby-ng.eclass from messing with the src path
+	default
 }
 
 src_prepare() {
@@ -80,7 +78,9 @@ src_prepare() {
 		-e "s:setup.py install:setup.py install --root=\$(DESTDIR):" \
 		swig/python/GNUmakefile || die
 
-	epatch "${FILESDIR}"/${PV}-*.patch
+	epatch "${FILESDIR}"/1.8.0-0001-Change-how-kakadu-is-detected-and-used.patch
+	epatch "${FILESDIR}"/1.7.2-ruby_cflags.patch
+	epatch "${FILESDIR}"/gdal-png-1.5.patch
 
 	# -soname is only accepted by GNU ld/ELF
 	[[ ${CHOST} == *-darwin* ]] \
@@ -92,7 +92,8 @@ src_prepare() {
 
 src_configure() {
 	if use ruby; then
-		RUBY_MOD_DIR=$(${RUBY} -r rbconfig -e 'print Config::CONFIG["sitearchdir"]')
+		RUBY_MOD_DIR="$(ruby18 -r rbconfig -e 'print Config::CONFIG["sitearchdir"]')"
+		echo "Ruby module dir is: $RUBY_MOD_DIR"
 	fi
 
 	# pcidsk is internal, because there is no such library yet released
@@ -110,6 +111,7 @@ src_configure() {
 		--without-hdf4 \
 		--without-fme \
 		--without-pcraster \
+		$(use_with kakadu kakadu "${EPREFIX}"/usr) \
 		--without-mrsid \
 		--without-jp2mrsid \
 		--without-msg \
@@ -147,13 +149,13 @@ src_configure() {
 		$(use_with sqlite sqlite3 "${EPREFIX}"/usr) \
 		$(use_with mysql mysql "${EPREFIX}"/usr/bin/mysql_config) \
 		$(use_with geos) \
-		$(use_with pam) \
+		$(use_with aux_xml pam) \
+		$(use_with pdf poppler) \
 		$(use_with perl) \
 		$(use_with ruby) \
 		$(use_with python) \
 		$(use_with threads) \
-		$(use_with kakadu kakadu "${EPREFIX}"/usr) \
-		--with-pymoddir=${EPREFIX}/$(python_get_sitedir)
+		--with-pymoddir="${EPREFIX}"/$(python_get_sitedir)
 
 	# mysql-config puts this in (and boy is it a PITA to get it out)
 	if use mysql; then
@@ -203,7 +205,7 @@ src_install() {
 	if use perl ; then
 	    pushd "${S}"/swig/perl > /dev/null
 	    perl-module_src_install
-		popd > /dev/null
+	    popd > /dev/null
 	    sed -i \
 			-e "s:BINDINGS        =       python ruby perl:BINDINGS        =       python ruby:g" \
 			GDALmake.opt || die
