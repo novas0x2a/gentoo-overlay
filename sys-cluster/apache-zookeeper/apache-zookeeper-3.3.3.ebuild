@@ -4,7 +4,7 @@
 
 EAPI="2"
 
-inherit eutils java-utils-2
+inherit eutils java-pkg-2 java-ant-2
 
 MY_PN="${PN/apache-/}"
 MY_P="${MY_PN}-${PV}"
@@ -20,50 +20,33 @@ KEYWORDS="~amd64"
 RESTRICT="mirror binchecks"
 IUSE=""
 
-DEPEND=""
-RDEPEND=">=virtual/jre-1.6"
+DEPEND=">=virtual/jdk-1.6"
+RDEPEND="
+  >=virtual/jre-1.6
+  dev-java/log4j[jmx]
+  >=dev-java/jline-0.9.94
+"
 
 S="${WORKDIR}/${MY_P}"
-INSTALL_DIR=/opt/"${PN}"
+
 DATA_DIR=/var/db/"${PN}"
-export CONFIG_PROTECT="${CONFIG_PROTECT} ${INSTALL_DIR}/conf"
+
+src_configure() {
+	true
+}
+
+src_compile() {
+	true
+}
 
 src_install() {
-	dodir "${DATA_DIR}"
+	java-pkg_newjar ${MY_P}.jar || die
+	dodir "${DATA_DIR}" || die
+	dobin bin/zk*.sh || die
 	sed "s:^dataDir=.*:dataDir=${DATA_DIR}:" conf/zoo_sample.cfg > conf/zoo.cfg || die "sed failed"
-
-	dodir "${INSTALL_DIR}"
-	mv "${S}"/* "${D}${INSTALL_DIR}" || die "install failed"
-
-	# env file
-	cat > 99"${PN}" <<-EOF
-		PATH=${INSTALL_DIR}/bin
-		CONFIG_PROTECT=${INSTALL_DIR}/conf
-	EOF
-	doenvd 99"${PN}" || die "doenvd failed"
-
-	cat > "${PN}" <<-EOF
-		#!/sbin/runscript
-
-		opts="start stop restart"
-
-		start() {
-			${INSTALL_DIR}/bin/zkServer.sh start > /dev/null
-				}
-
-		stop() {
-			${INSTALL_DIR}/bin/zkServer.sh stop
-				}
-
-		restart() {
-			${INSTALL_DIR}/bin/zkServer.sh restart > /dev/null
-				}
-
-		status() {
-			${INSTALL_DIR}/bin/zkServer.sh status
-				}
-	EOF
-	doinitd "${PN}" || die "doinitd failed"
+	insinto /etc/zookeeper || die
+	doins conf/* || die
+	newinitd "${FILESDIR}/init" "${PN}" || die
 }
 
 pkg_postinst() {

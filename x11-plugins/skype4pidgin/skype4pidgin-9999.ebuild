@@ -36,6 +36,8 @@ src_compile() {
 		emake locales || die
 		LIBPURPLE_CFLAGS=${LIBPURPLE_CFLAGS} -DENABLE_NLS
 	fi
+	einfo $CFLAGS
+	einfo $LDFLAGS
 
 	gcc ${COMMON_CFLAGS} -DSKYPENET ${CFLAGS} ${LDFLAGS} ${GLIB_CFLAGS} \
 		 ${LIBPURPLE_CFLAGS} -I. libskype.c -o libskypenet.so || die
