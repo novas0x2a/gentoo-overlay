@@ -4,6 +4,7 @@
 
 EAPI="3"
 JAVA_PKG_IUSE="source"
+JAVA_ANT_IGNORE_SYSTEM_CLASSES=1
 
 inherit eutils java-pkg-2 java-ant-2
 
@@ -20,13 +21,15 @@ SLOT="0"
 KEYWORDS="~amd64"
 #RESTRICT="mirror binchecks"
 RESTRICT="mirror"
-IUSE="-jmx"
+IUSE=""
 
+# zookeeper assumes that jmx classes exist in log4j
 COMMON_DEP="
-        >=dev-java/log4j-1.2.15[jmx?]"
+  >=dev-java/log4j-1.2.15[jmx]
+  >=dev-java/jline-0.9.94
+"
 
 RDEPEND=" >=virtual/jre-1.6
-  >=dev-java/jline-0.9.94
   ${COMMON_DEP}"
 
 DEPEND=">=virtual/jdk-1.6
@@ -44,13 +47,16 @@ src_prepare() {
 	sed -i -e 's/ivy-retrieve,clover,build-generated/build-generated/' build.xml
 
 	# Delete all jars to make sure we don't use a cached one
-	einfo "Removing prebuild jars"
+	einfo "Removing prebuilt jars"
 	find "${S}" -name '*.jar' -print -delete
 
 	# Link the jars we need for build into the tree
 	cd "${S}/src/java/lib"
 	java-pkg_jar-from log4j
 	java-pkg_jar-from jline
+
+	# This is required or the build attempts to use svn
+	echo 'echo "lastRevision=RELEASE" > $1' > "$S/src/lastRevision.sh"
 }
 
 src_install() {
