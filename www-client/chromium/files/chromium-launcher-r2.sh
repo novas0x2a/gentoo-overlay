@@ -1,1 +1,0 @@
-/usr/portage/www-client/chromium/files/chromium-launcher-r2.sh

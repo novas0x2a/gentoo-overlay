@@ -1,1 +1,0 @@
-/usr/portage/www-client/chromium/files/extract_v8_version.py

@@ -1,0 +1,45 @@
+From bce789b826bcadb35e4fdae54781f41295d7cf5f Mon Sep 17 00:00:00 2001
+From: Bertrand Jacquin <beber@meleeweb.net>
+Date: Tue, 13 Aug 2013 16:07:58 +0200
+Subject: [PATCH] Remove the usage of local SSL certificates and use system
+ provided by ca-certificates.
+
+---
+ src/future/http/HTTPSFuture.php | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/src/future/http/HTTPSFuture.php b/src/future/http/HTTPSFuture.php
+index 98cd154..57b415d 100644
+--- a/src/future/http/HTTPSFuture.php
++++ b/src/future/http/HTTPSFuture.php
+@@ -285,28 +285,21 @@ final class HTTPSFuture extends BaseHTTPFuture {
+       //   `setCABundle()` or similar.
+       // - Then, check if a global bundle is set explicitly for all requests,
+       //   via `setGlobalCABundle()` or similar.
+-      // - Then, if a local custom.pem exists, use that, because it probably
+-      //   means that the user wants to override everything (also because the
+-      //   user might not have access to change the box's php.ini to add
+-      //   curl.cainfo).
+       // - Otherwise, try using curl.cainfo. If it's set explicitly, it's
+       //   probably reasonable to try using it before we fall back to what
+       //   libphutil ships with.
+-      // - Lastly, try the default that libphutil ships with. If it doesn't
++      // - Lastly, try the default from ca-certificates. If it doesn't
+       //   work, give up and yell at the user.
+ 
+       if (!$this->getCABundle()) {
+-        $caroot = dirname(phutil_get_library_root('phutil')).'/resources/ssl/';
+         $ini_val = ini_get('curl.cainfo');
+         if (self::getGlobalCABundle()) {
+           $this->setCABundleFromPath(self::getGlobalCABundle());
+-        } else if (Filesystem::pathExists($caroot.'custom.pem')) {
+-          $this->setCABundleFromPath($caroot.'custom.pem');
+         } else if ($ini_val) {
+           // TODO: We can probably do a pathExists() here, even.
+           $this->setCABundleFromPath($ini_val);
+         } else {
+-          $this->setCABundleFromPath($caroot.'default.pem');
++          $this->setCABundleFromPath('/etc/ssl/certs/ca-certificates.crt');
+         }
+       }
+ 
