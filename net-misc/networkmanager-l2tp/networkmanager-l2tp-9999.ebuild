@@ -2,26 +2,36 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI="5"
+EAPI=5
+GCONF_DEBUG="no"
+GNOME_ORG_MODULE="networkmanager-${PN##*-}"
 
 EGIT_REPO_URI="https://github.com/seriyps/NetworkManager-l2tp.git"
-inherit autotools git-r3
+inherit gnome2 autotools git-r3
 
 DESCRIPTION="NetworkManager L2TP plugin"
 HOMEPAGE="https://github.com/seriyps/NetworkManager-l2tp"
+SRC_URI=""
 
 LICENSE="GPL-2+"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="gnome nls static-libs"
+IUSE="gtk"
 
-RDEPEND="dev-libs/dbus-glib
-	dev-libs/glib:2
-	net-dialup/ppp
-	>=net-misc/networkmanager-0.9.8
-	sys-apps/dbus
+RDEPEND="
+	>=net-misc/networkmanager-0.9.6
+	>=dev-libs/dbus-glib-0.74
+	>=dev-libs/glib-2.32:2
+	net-dialup/ppp:=
+	net-dialup/pptpclient
 	net-dialup/xl2tpd
-	gnome? ( gnome-base/libgnome-keyring x11-libs/gtk+:3 )"
+	>=net-misc/networkmanager-0.9.8
+	gtk? (
+		app-crypt/libsecret
+		>=gnome-extra/nm-applet-0.9.9.0
+		>=x11-libs/gtk+-3.4:3
+	)
+"
 
 DEPEND="${RDEPEND}
 	dev-perl/XML-Parser
@@ -35,11 +45,17 @@ src_prepare() {
 }
 
 src_configure() {
-	econf \
-		$(use_enable nls) \
-		$(use_enable static-libs static) \
-		$(use_with gnome) \
+	local myconf
+	# Same hack as net-dialup/pptpd to get proper plugin dir for ppp, bug #519986
+	local PPPD_VER=`best_version net-dialup/ppp`
+	PPPD_VER=${PPPD_VER#*/*-} #reduce it to ${PV}-${PR}
+	PPPD_VER=${PPPD_VER%%[_-]*} # main version without beta/pre/patch/revision
+	myconf="${myconf} --with-pppd-plugin-dir=/usr/$(get_libdir)/pppd/${PPPD_VER}"
+
+	gnome2_src_configure \
 		--disable-more-warnings \
+		--disable-static \
 		--with-dist-version=Gentoo \
-		--with-pic
+		$(use_with gtk gnome) \
+		${myconf}
 }
