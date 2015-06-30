@@ -121,5 +121,5 @@ src_install() {
 		| xargs --no-run-if-empty -- \
 			fperms 755
 
-	dodoc NOTICE README
+	dodoc NOTICE README.md
 }

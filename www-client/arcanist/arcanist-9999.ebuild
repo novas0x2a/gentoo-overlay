@@ -103,7 +103,7 @@ src_install() {
 
 	dosym "/usr/share/php/${PN}/bin/arc" /usr/bin/arc
 
-	dodoc NOTICE README
+	dodoc NOTICE README.md
 }
 
 pkg_postinst() {
