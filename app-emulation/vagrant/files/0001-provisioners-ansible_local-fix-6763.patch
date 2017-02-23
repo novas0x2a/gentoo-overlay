@@ -1,0 +1,61 @@
+From a0aaa39988de6217447d6585f32a9742dbc69237 Mon Sep 17 00:00:00 2001
+From: Gilles Cornu <git@gilles.cornu.name>
+Date: Sun, 17 Jan 2016 11:26:36 +0100
+Subject: [PATCH] provisioners/ansible_local: fix #6763
+
+Before this change, the detection of a non-existing path on the guest
+machine was considered as an error and lead to interrupt the current vagrant
+action. This was actually a mistake to do so, since the config checks
+are performed before many other vagrant actions than `provision`.
+The config.validate phase is also intended to primarily check the options
+sanity, but it cannot be too strict with the guest state (which can easily
+get "out of automatic control").
+
+With this change, we still apply these checks (when possible), but only warn
+about possible configuration problems. This way, the subsequent
+statements will happen anyway (e.g. ansible commands will be
+executed, vagrant machine will be destroyed, etc.)
+---
+ CHANGELOG.md                                 | 4 ++++
+ plugins/provisioners/ansible/config/guest.rb | 6 ++++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 32660b1..334be90 100644
+--- a/all/vagrant-1.8.1/CHANGELOG.md
++++ b/all/vagrant-1.8.1/CHANGELOG.md
+@@ -14,6 +14,10 @@ BUG FIXES:
+   - provisioners/chef: convert chef version to a string before comparing for
+     the command builder [GH-6709, GH-6711]
+   - provisioners/shell: convert env var values to strings [GH-6714]
++  - provisioners/ansible_local: The configuration sanity checks now only warn
++      on missing files or directories, so that the requested vagrant command is
++      always executed (e.g. `vagrant destroy` is not aborted when the configured
++      playbook is not present on the guest) [GH-6763]
+ 
+ ## 1.8.0 (December 21, 2015)
+ 
+diff --git a/plugins/provisioners/ansible/config/guest.rb b/plugins/provisioners/ansible/config/guest.rb
+index a7f3bf4..775b4fb 100644
+--- a/all/vagrant-1.8.1/plugins/provisioners/ansible/config/guest.rb
++++ b/all/vagrant-1.8.1/plugins/provisioners/ansible/config/guest.rb
+@@ -40,12 +40,14 @@ module VagrantPlugins
+           remote_path = Pathname.new(path).expand_path(@provisioning_path)
+           if machine.communicate.ready? && !machine.communicate.test("test #{test_args} #{remote_path}")
+             if error_message_key
+-              @errors << I18n.t(error_message_key, path: remote_path, system: "guest")
++              # only show warnings, as raising an error would abort the request
++              # vagrant action (e.g. prevent `destroy` to be executed)
++              machine.ui.warn(I18n.t(error_message_key, path: remote_path, system: "guest"))
+             end
+             return false
+           end
+           # when the machine is not ready for SSH communication,
+-          # the check is "optimistically" by passed.
++          # the check is "optimistically" bypassed.
+           true
+         end
+ 
+-- 
+2.8.1
+

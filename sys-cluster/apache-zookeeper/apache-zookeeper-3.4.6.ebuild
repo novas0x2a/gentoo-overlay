@@ -26,7 +26,7 @@ IUSE=""
 COMMON_DEP="
   >=dev-java/log4j-1.2.16[jmx]
   >=dev-java/slf4j-api-1.6.1
-  >=dev-java/jline-0.9.94
+  >=dev-java/jline-0.9.94:0
   >=dev-java/netty-3.2.2
   dev-java/slf4j-log4j12
 "
