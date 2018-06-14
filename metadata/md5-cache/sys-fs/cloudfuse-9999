@@ -1,0 +1,11 @@
+DEFINED_PHASES=unpack
+DEPEND=dev-libs/libxml2 net-misc/curl sys-fs/fuse dev-libs/openssl dev-vcs/git
+DESCRIPTION=Cloudfuse is a FUSE application which provides access to Rackspace's Cloud Files (or any installation of Swift).
+EAPI=4
+HOMEPAGE=http://redbo.github.com/cloudfuse/
+KEYWORDS=~amd64
+LICENSE=MIT
+RDEPEND=dev-libs/libxml2 net-misc/curl sys-fs/fuse dev-libs/openssl
+SLOT=0
+_eclasses_=git-2	45ff482316b52b3f96ff6b7309b77f03
+_md5_=0769d9bfb7dce5220a5dfb5ce483a3b1

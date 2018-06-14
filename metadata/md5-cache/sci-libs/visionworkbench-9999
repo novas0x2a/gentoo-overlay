@@ -1,0 +1,12 @@
+DEFINED_PHASES=compile install preinst unpack
+DEPEND=dev? ( dev-util/lcov ) dev-libs/boost virtual/blas virtual/lapack media-libs/libpng media-libs/jpeg media-libs/ilmbase media-libs/openexr hdf? ( sci-libs/hdf ) sci-libs/gdal sci-libs/proj qt4? ( x11-libs/qt-core:4 x11-libs/qt-gui:4 x11-libs/qt-sql:4 x11-libs/qt-opengl:4 ) python? ( >=dev-lang/python-2.4.4:2.4 dev-python/numpy >=dev-lang/swig-1.3.29 ) >=app-portage/elt-patches-20170422 !<sys-devel/gettext-0.18.1.1-r3 || ( >=sys-devel/automake-1.16.1:1.16 >=sys-devel/automake-1.15.1:1.15 ) >=sys-devel/autoconf-2.69 >=sys-devel/libtool-2.4 dev-vcs/subversion net-misc/rsync
+DESCRIPTION=The NASA Vision Workbench (VW) is a general purpose image processing and computer vision library.
+EAPI=1
+HOMEPAGE=http://ti.arc.nasa.gov/project/nasa-vision-workbench/
+IUSE=python dev hdf qt4
+KEYWORDS=~x86 ~amd64
+LICENSE=NOSA
+RDEPEND=dev? ( dev-util/lcov ) dev-libs/boost virtual/blas virtual/lapack media-libs/libpng media-libs/jpeg media-libs/ilmbase media-libs/openexr hdf? ( sci-libs/hdf ) sci-libs/gdal sci-libs/proj qt4? ( x11-libs/qt-core:4 x11-libs/qt-gui:4 x11-libs/qt-sql:4 x11-libs/qt-opengl:4 ) python? ( >=dev-lang/python-2.4.4:2.4 dev-python/numpy )
+SLOT=0
+_eclasses_=autotools	d0e5375d47f4c809f406eb892e531513	desktop	1b286a7e7143d8c4ec89cd0d2743a097	epatch	9a5f039771f143195164a15a4faa41a1	estack	43ddf5aaffa7a8d0482df54d25a66a1f	eutils	5b8ce72259e08104b337fe28c6de5dbc	libtool	0081a71a261724730ec4c248494f044d	ltprune	607e058da37aa6dabfa408b7d61da72e	multilib	97f470f374f2e94ccab04a2fb21d811e	preserve-libs	ef207dc62baddfddfd39a164d9797648	subversion	a5d5826a85609611f098c0553eb24cc1	toolchain-funcs	1e35303c63cd707f6c3422b4493d5607	vcs-clean	2a0f74a496fa2b1552c4f3398258b7bf
+_md5_=3442aad10d022865d84b9faeca40d17c

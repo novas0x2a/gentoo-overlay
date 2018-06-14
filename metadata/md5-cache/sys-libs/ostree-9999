@@ -1,0 +1,12 @@
+DEFINED_PHASES=configure prepare unpack
+DEPEND=dev-libs/glib soup? ( net-libs/libsoup ) curl? ( net-misc/curl ) sys-libs/libselinux app-crypt/gpgme app-arch/libarchive sys-fs/fuse app-arch/xz-utils virtual/pkgconfig sys-devel/bison sys-fs/e2fsprogs >=dev-vcs/git-1.8.2.1[curl]
+DESCRIPTION=fedora junk
+EAPI=6
+HOMEPAGE=https://ostree.readthedocs.io/
+IUSE=curl +soup
+KEYWORDS=amd64
+LICENSE=GPL-2
+RDEPEND=dev-libs/glib soup? ( net-libs/libsoup ) curl? ( net-misc/curl ) sys-libs/libselinux app-crypt/gpgme app-arch/libarchive sys-fs/fuse app-arch/xz-utils
+SLOT=0
+_eclasses_=git-r3	8f6de46b0aa318aea0e8cac62ece098b
+_md5_=8a20343c297b11982dd81cd23373323f
