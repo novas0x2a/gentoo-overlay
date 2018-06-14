@@ -4,7 +4,7 @@
 
 EAPI=6
 
-PYTHON_COMPAT=( python2_7 pypy{,3} python3_{4,5} )
+PYTHON_COMPAT=( python2_7 pypy{,3} python3_{4,5,6} )
 
 inherit distutils-r1
 
@@ -13,7 +13,7 @@ HOMEPAGE='https://github.com/joeyespo/grip'
 LICENSE='MIT'
 
 SLOT='0'
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 KEYWORDS='~amd64'
 
