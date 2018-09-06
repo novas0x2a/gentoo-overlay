@@ -6,5 +6,5 @@ HOMEPAGE=https://github.com/pkg/errors
 KEYWORDS=amd64 x86
 LICENSE=BSD
 SLOT=0
-_eclasses_=golang-base	d4e3a3f895016e5c9d7afb1a33e7cf3c	golang-build	b66349c110e4ddd6203bbe8bf4ae05c1
+_eclasses_=golang-base	8e4d7f712ec0e170e2c190c1e3da6501	golang-build	1b46197451ce01766db03a9955597d7b
 _md5_=a2362b1b695bd8035a52271672f11c9a

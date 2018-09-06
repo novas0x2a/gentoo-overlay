@@ -8,5 +8,5 @@ KEYWORDS=amd64
 LICENSE=GPL-2
 RDEPEND=dev-libs/glib soup? ( net-libs/libsoup ) curl? ( net-misc/curl ) sys-libs/libselinux app-crypt/gpgme app-arch/libarchive sys-fs/fuse app-arch/xz-utils
 SLOT=0
-_eclasses_=git-r3	8f6de46b0aa318aea0e8cac62ece098b
+_eclasses_=git-r3	918d6a744039c29af2cadc7317459765
 _md5_=8a20343c297b11982dd81cd23373323f

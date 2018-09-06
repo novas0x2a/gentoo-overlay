@@ -7,5 +7,5 @@ KEYWORDS=~amd64 ~x86
 LICENSE=MIT
 RDEPEND=virtual/ffmpeg media-gfx/imagemagick x11-apps/xinput x11-apps/xwininfo x11-misc/dzen:2
 SLOT=0
-_eclasses_=git-r3	8f6de46b0aa318aea0e8cac62ece098b
+_eclasses_=git-r3	918d6a744039c29af2cadc7317459765
 _md5_=4e66d7ad9754e8584254f81d2e9ba708
