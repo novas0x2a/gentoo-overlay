@@ -1,0 +1,12 @@
+DEFINED_PHASES=install
+DESCRIPTION=Ultimate Packer for eXecutables, binary version with proprietary NRV compression
+EAPI=5
+HOMEPAGE=http://upx.sourceforge.net/
+KEYWORDS=~amd64 ~ppc ~x86
+LICENSE=GPL-2
+RDEPEND=!app-arch/upx-ucl
+RESTRICT=strip
+SLOT=0
+SRC_URI=x86? ( http://upx.sourceforge.net/download/upx-3.95-i386_linux.tar.xz ) amd64? ( http://upx.sourceforge.net/download/upx-3.95-amd64_linux.tar.xz ) ppc? ( http://upx.sourceforge.net/download/upx-3.95-powerpc_linux.tar.xz ) arm? ( http://upx.sourceforge.net/download/upx-3.95-armeb_linux.tar.xz ) mips? ( http://upx.sourceforge.net/download/upx-3.95-mipsel_linux.tar.xz )
+_eclasses_=pax-utils	e85f015e815dd463b0c206d781ef45a5
+_md5_=3a9cf0c8faf92f923bf97d88530f70e1
