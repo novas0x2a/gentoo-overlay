@@ -1,0 +1,25 @@
+From 4b8cd6283111fb59d1d92370cd0a642770a4995d Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Sat, 1 Feb 2020 14:11:03 -0800
+Subject: [PATCH] change the default socket path
+
+---
+ main.go       | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/daemon/main.go b/daemon/main.go
+index e31a9fc..1625884 100644
+--- a/daemon/main.go
++++ b/daemon/main.go
+@@ -31,7 +31,7 @@ var (
+ 	workers      = 16
+ 	debug        = false
+ 
+-	uiSocket = "unix:///tmp/osui.sock"
++	uiSocket = "unix:///run/opensnitch.sock"
+ 	uiClient = (*ui.Client)(nil)
+ 
+ 	cpuProfile = ""
+-- 
+2.25.0
+

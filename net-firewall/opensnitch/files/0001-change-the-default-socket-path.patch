@@ -1,0 +1,25 @@
+From 4b8cd6283111fb59d1d92370cd0a642770a4995d Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Sat, 1 Feb 2020 14:11:03 -0800
+Subject: [PATCH] change the default socket path
+
+---
+ bin/opensnitch-ui | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/bin/opensnitch-ui b/bin/opensnitch-ui
+index 2b6c59a..1222160 100755
+--- a/bin/opensnitch-ui
++++ b/bin/opensnitch-ui
+@@ -28,7 +28,7 @@ def on_exit():
+ 
+ if __name__ == '__main__':
+     parser = argparse.ArgumentParser(description='OpenSnitch UI service.')
+-    parser.add_argument("--socket", dest="socket", default="unix:///tmp/osui.sock", help="Path of the unix socket for the gRPC service (https://github.com/grpc/grpc/blob/master/doc/naming.md).", metavar="FILE")
++    parser.add_argument("--socket", dest="socket", default="unix:///run/opensnitch.sock", help="Path of the unix socket for the gRPC service (https://github.com/grpc/grpc/blob/master/doc/naming.md).", metavar="FILE")
+     parser.add_argument("--config", dest="config", default="~/.opensnitch/ui-config.json", help="Path of the UI json configuration file.", metavar="FILE")
+ 
+     args = parser.parse_args()
+-- 
+2.25.0
+

@@ -1,8 +1,8 @@
-EAPI=5
+EAPI=7
 
 EGIT_REPO_URI="https://github.com/rustyrussell/stats.git"
 
-inherit git-2 eutils
+inherit git-r3 eutils
 
 DESCRIPTION="simple filter to gather numbers in repeated text"
 HOMEPAGE="https://github.com/rustyrussell/stats"
@@ -17,4 +17,8 @@ DEPEND="${RDEPEND}"
 
 src_configure() {
 	emake config.h
+}
+
+src_install() {
+	emake DESTDIR="${D}" PREFIX="${EPREFIX}" install
 }
